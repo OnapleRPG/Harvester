@@ -1,6 +1,6 @@
 plugins {
     id 'org.spongepowered.plugin' version '0.8.1'
-    id "org.sonarqube" version "2.2"
+    id "org.sonarqube" version "2.5"
 }
 
 apply plugin: 'java'
@@ -35,7 +35,7 @@ dependencies {
 
 sonarqube {
     properties {
-        property "sonar.projectName", "Plugin de récolte pour le serveur Minecraft Ylinor"
+        property "sonar.projectName", "Harvester"
         property "sonar.organization", "ylinor-github"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.login", "=== YOUR SONARCLOUD KEY HERE ==="
