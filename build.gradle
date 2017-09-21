@@ -24,12 +24,12 @@ publishing {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
     compile 'org.spongepowered:spongeapi:6.0.0'
-    compile 'org.xerial:sqlite-jdbc:3.7.2'
     testCompile "junit:junit:4.11"
 }
 
