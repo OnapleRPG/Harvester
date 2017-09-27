@@ -1,9 +1,7 @@
 package com.ylinor.harvester;
 
-import com.google.common.reflect.TypeToken;
 import com.ylinor.harvester.data.beans.HarvestableBean;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
-import ninja.leaping.configurate.ConfigurationNode;
 import org.slf4j.Logger;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
@@ -12,10 +10,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
-import org.spongepowered.api.event.filter.cause.First;
 
 import javax.inject.Inject;
-import java.util.EventListener;
 import java.util.List;
 import java.util.Optional;
 

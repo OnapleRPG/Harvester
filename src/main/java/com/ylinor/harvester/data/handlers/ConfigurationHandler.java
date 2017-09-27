@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConfigurationHandler {
+    private ConfigurationHandler() {}
+
     @Inject
     private static Logger logger;
 
     private static List<HarvestableBean> harvestableList;
-    private static CommentedConfigurationNode harvestables;
 
     public static List<HarvestableBean> getHarvestableList(){
         return harvestableList;
@@ -32,16 +33,15 @@ public class ConfigurationHandler {
      * @param configurationNode ConfigurationNode to read from
      */
     public static void readHarvestablesConfiguration(CommentedConfigurationNode configurationNode){
-        harvestables = configurationNode;
+        CommentedConfigurationNode harvestables = configurationNode;
         harvestableList = new ArrayList<>();
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(HarvestableBean.class), new HarvestableSerializer());
         try {
             harvestableList = harvestables.getNode("harvestables").getList(TypeToken.of(HarvestableBean.class));
             for (HarvestableBean harvestable: harvestableList) {
-                System.out.println(harvestable.getType());
+                logger.debug("Harvestable from config : " + harvestable.getType());
             }
         } catch (ObjectMappingException e) {
-            e.printStackTrace();
             logger.error("Error while reading configuration 'harvestables' : " + e.getMessage());
         }
     }
@@ -57,7 +57,6 @@ public class ConfigurationHandler {
         try {
             configNode = configLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error("Error while loading configuration '" + configName + "' : " + e.getMessage());
         }
         return configNode;
