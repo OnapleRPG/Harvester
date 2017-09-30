@@ -1,0 +1,6 @@
+language: java
+addons:
+  sonarcloud:
+    organization: ylinor-github
+script:
+  - sonar-scanner
