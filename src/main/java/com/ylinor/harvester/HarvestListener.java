@@ -23,13 +23,12 @@ public class HarvestListener {
         final Optional<Player> player = event.getCause().first(Player.class);
         if (player.isPresent()) {
             if (player.get().gameMode().get() != GameModes.CREATIVE) {
-                event.setCancelled(true);
-                /*for (Transaction<BlockSnapshot> transaction: event.getTransactions()) {
+                for (Transaction<BlockSnapshot> transaction: event.getTransactions()) {
                     BlockType destroyedBlockType = transaction.getOriginal().getState().getType();
                     if (isBlockRegistered(destroyedBlockType)) {
                         event.setCancelled(true);
                     }
-                }*/
+                }
             }
         }
     }
@@ -41,9 +40,10 @@ public class HarvestListener {
      */
     private boolean isBlockRegistered(BlockType blockType) {
         boolean blockRegistered = false;
+        String blockTypeName = blockType.getName().replaceFirst(".*:", "").trim();
         List<HarvestableBean> harvestables = ConfigurationHandler.getHarvestableList();
         for (HarvestableBean harvestable: harvestables) {
-            if (harvestable.getType() == blockType.getName()) {
+            if (harvestable.getType().trim().equals(blockTypeName)) {
                 blockRegistered = true;
             }
         }
