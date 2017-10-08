@@ -1,11 +1,16 @@
 package com.ylinor.harvester.data.beans;
 
-public class HarvestableBean {
-    /** Nom du type du bloc **/
-    private String type;
+import java.util.List;
 
-    public HarvestableBean(String type) {
+public class HarvestableBean {
+    /** Type of the block **/
+    private String type;
+    /** Block is harvestable by hand **/
+    private boolean breakableByHand;
+
+    public HarvestableBean(String type, boolean breakableByHand) {
         this.type = type;
+        this.breakableByHand = breakableByHand;
     }
 
     public String getType() {
@@ -13,5 +18,11 @@ public class HarvestableBean {
     }
     public void setType(String type) {
         this.type = type;
+    }
+    public boolean getBreakableByHand() {
+        return breakableByHand;
+    }
+    public void setBreakableByHand(boolean breakableByHand) {
+        this.breakableByHand = breakableByHand;
     }
 }

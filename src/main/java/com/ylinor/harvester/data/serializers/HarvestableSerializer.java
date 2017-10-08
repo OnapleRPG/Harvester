@@ -6,12 +6,15 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 
+import java.util.List;
+
 public class HarvestableSerializer implements TypeSerializer<HarvestableBean> {
 
     @Override
     public HarvestableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
         String blocType = value.getNode("type").getString();
-        return new HarvestableBean(blocType);
+        boolean breakableByHand = value.getNode("byhand").getBoolean();
+        return new HarvestableBean(blocType, breakableByHand);
     }
 
     @Override
