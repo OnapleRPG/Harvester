@@ -16,12 +16,17 @@ import java.nio.file.Path;
 public class Harvester {
 
 	@Inject
-	private Logger logger;
-
-	@Inject
     @ConfigDir(sharedRoot=true)
     private Path configDir;
 
+	private static Logger logger;
+	@Inject
+	private void setLogger(Logger logger) {
+		Harvester.logger = logger;
+	}
+	public static Logger getLogger() {
+		return logger;
+	}
 
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {

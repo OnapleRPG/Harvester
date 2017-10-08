@@ -1,6 +1,7 @@
 package com.ylinor.harvester.data.handlers;
 
 import com.google.common.reflect.TypeToken;
+import com.ylinor.harvester.Harvester;
 import com.ylinor.harvester.data.beans.HarvestableBean;
 import com.ylinor.harvester.data.serializers.HarvestableSerializer;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -19,8 +20,8 @@ import java.util.List;
 public class ConfigurationHandler {
     private ConfigurationHandler() {}
 
-    @Inject
-    private static Logger logger;
+    /*@Inject
+    private static Logger logger;*/
 
     private static List<HarvestableBean> harvestableList;
 
@@ -33,16 +34,15 @@ public class ConfigurationHandler {
      * @param configurationNode ConfigurationNode to read from
      */
     public static void readHarvestablesConfiguration(CommentedConfigurationNode configurationNode){
-        CommentedConfigurationNode harvestables = configurationNode;
         harvestableList = new ArrayList<>();
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(HarvestableBean.class), new HarvestableSerializer());
         try {
-            harvestableList = harvestables.getNode("harvestables").getList(TypeToken.of(HarvestableBean.class));
+            harvestableList = configurationNode.getNode("harvestables").getList(TypeToken.of(HarvestableBean.class));
             for (HarvestableBean harvestable: harvestableList) {
-                logger.debug("Harvestable from config : " + harvestable.getType());
+                Harvester.getLogger().debug("Harvestable from config : " + harvestable.getType());
             }
         } catch (ObjectMappingException e) {
-            logger.error("Error while reading configuration 'harvestables' : " + e.getMessage());
+            Harvester.getLogger().error("Error while reading configuration 'harvestables' : " + e.getMessage());
         }
     }
 
@@ -57,7 +57,7 @@ public class ConfigurationHandler {
         try {
             configNode = configLoader.load();
         } catch (IOException e) {
-            logger.error("Error while loading configuration '" + configName + "' : " + e.getMessage());
+            Harvester.getLogger().error("Error while loading configuration '" + configName + "' : " + e.getMessage());
         }
         return configNode;
     }
