@@ -1,16 +1,17 @@
 package com.ylinor.harvester.data.beans;
 
-import java.util.List;
-
 public class HarvestableBean {
     /** Type of the block **/
     private String type;
-    /** Block is harvestable by hand **/
-    private boolean breakableByHand;
+    /** Minimum time before resource respawn **/
+    private int respawnMin;
+    /** Maximum time before resource respawn **/
+    private int respawnMax;
 
-    public HarvestableBean(String type, boolean breakableByHand) {
+    public HarvestableBean(String type, int respawnMin, int respawnMax) {
         this.type = type;
-        this.breakableByHand = breakableByHand;
+        this.respawnMin = respawnMin;
+        this.respawnMax = respawnMax;
     }
 
     public String getType() {
@@ -19,10 +20,18 @@ public class HarvestableBean {
     public void setType(String type) {
         this.type = type;
     }
-    public boolean getBreakableByHand() {
-        return breakableByHand;
+
+    public int getRespawnMin() {
+        return respawnMin;
     }
-    public void setBreakableByHand(boolean breakableByHand) {
-        this.breakableByHand = breakableByHand;
+    public void setRespawnMin(int respawnMin) {
+        this.respawnMin = respawnMin;
+    }
+
+    public int getRespawnMax() {
+        return respawnMax;
+    }
+    public void setRespawnMax(int respawnMax) {
+        this.respawnMax = respawnMax;
     }
 }

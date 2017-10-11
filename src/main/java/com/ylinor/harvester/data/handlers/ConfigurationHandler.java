@@ -9,9 +9,7 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
-import org.slf4j.Logger;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,9 +17,6 @@ import java.util.List;
 
 public class ConfigurationHandler {
     private ConfigurationHandler() {}
-
-    /*@Inject
-    private static Logger logger;*/
 
     private static List<HarvestableBean> harvestableList;
 

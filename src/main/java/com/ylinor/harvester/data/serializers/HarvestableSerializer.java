@@ -13,8 +13,9 @@ public class HarvestableSerializer implements TypeSerializer<HarvestableBean> {
     @Override
     public HarvestableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
         String blocType = value.getNode("type").getString();
-        boolean breakableByHand = value.getNode("byhand").getBoolean();
-        return new HarvestableBean(blocType, breakableByHand);
+        int respawnMin = value.getNode("respawnmin").getInt();
+        int respawnMax = value.getNode("respawnmax").getInt();
+        return new HarvestableBean(blocType, respawnMin, respawnMax);
     }
 
     @Override
