@@ -8,20 +8,15 @@ import com.ylinor.harvester.data.handlers.ConfigurationHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.Transaction;
-import org.spongepowered.api.data.property.item.HarvestingProperty;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
@@ -42,10 +37,8 @@ public class HarvestListener {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(destroyedBlockType);
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
-                    if (isBlockBreakable(harvestable, destroyedBlockType, player.get().getItemInHand(HandTypes.MAIN_HAND))) {
-                        registerRespawningBlock(harvestable, transaction.getOriginal().getPosition());
-                        return;
-                    }
+                    registerRespawningBlock(harvestable, transaction.getOriginal().getPosition());
+                    return;
                 }
             }
             event.setCancelled(true);
@@ -66,24 +59,6 @@ public class HarvestListener {
             }
         }
         return Optional.empty();
-    }
-
-    /**
-     * Check if a block type is breakable with given tool
-     * @param harvestable Data of the breakable block
-     * @param optionalTool Tool in player's hand
-     * @return Block is present in config file
-     */
-    private boolean isBlockBreakable(HarvestableBean harvestable, BlockType blockType, Optional<ItemStack> optionalTool) {
-        if (optionalTool.isPresent()) {
-            ItemStack tool = optionalTool.get();
-            Optional<HarvestingProperty> optionalHarvestingProperty = tool.getProperty(HarvestingProperty.class);
-            if (optionalHarvestingProperty.isPresent()) {
-                HarvestingProperty harvestingProperty = optionalHarvestingProperty.get();
-                return harvestingProperty.getValue().contains(blockType);
-            }
-        }
-        return false;
     }
 
     /**

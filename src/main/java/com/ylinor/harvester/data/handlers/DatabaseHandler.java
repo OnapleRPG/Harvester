@@ -1,6 +1,5 @@
 package com.ylinor.harvester.data.handlers;
 
-import com.ylinor.harvester.Harvester;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.sql.SqlService;
 
