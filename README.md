@@ -33,4 +33,4 @@ harvestables = [
 ]
 ```
 _Following the above example, dirt can be mined and will respawn between 2 and 5 minutes later.
-Only andesite type of stone can be broken, and it will respawn between 5 and 10 minutes later._
+Only the andesite variant of stone can be broken, and it will respawn between 5 and 10 minutes later._
