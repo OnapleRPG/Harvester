@@ -5,9 +5,12 @@ import com.ylinor.harvester.data.beans.HarvestableBean;
 import com.ylinor.harvester.data.beans.RespawningBlockBean;
 import com.ylinor.harvester.data.dao.RespawningBlockDao;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
+import com.ylinor.harvester.data.serializers.BlockStateSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
+import org.spongepowered.api.block.trait.BlockTrait;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
@@ -18,10 +21,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public class HarvestListener {
     /**
@@ -33,8 +33,7 @@ public class HarvestListener {
         final Optional<Player> player = event.getCause().first(Player.class);
         if (player.isPresent() && player.get().gameMode().get() != GameModes.CREATIVE) {
             for (Transaction<BlockSnapshot> transaction: event.getTransactions()) {
-                BlockType destroyedBlockType = transaction.getOriginal().getState().getType();
-                Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(destroyedBlockType);
+                Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
                     registerRespawningBlock(harvestable, transaction.getOriginal().getPosition());
@@ -47,15 +46,34 @@ public class HarvestListener {
 
     /**
      * Return harvestable if present in configuration
-     * @param blockType Type of block to look for
+     * @param blockState Block to identify
      * @return Optional of harvestable
      */
-    private Optional<HarvestableBean> identifyHarvestable(BlockType blockType) {
-        String blockTypeName = blockType.getName().trim();
+    private Optional<HarvestableBean> identifyHarvestable(BlockState blockState) {
+        String blockTypeName = blockState.getType().getName().trim();
         List<HarvestableBean> harvestables = ConfigurationHandler.getHarvestableList();
-        for (HarvestableBean harvestable: harvestables){
+        for (HarvestableBean harvestable: harvestables) {
             if (harvestable.getType().trim().equals(blockTypeName)) {
-                return Optional.of(harvestable);
+                boolean statesMatch = true;
+                Map<String, String> blockTraits = harvestable.getStates();
+                for (Map.Entry<String, String> entry : blockTraits.entrySet()) {
+                    Optional<BlockTrait<?>> blockTrait = blockState.getTrait(entry.getKey());
+                    if (blockTrait.isPresent()) {
+                        Optional<?> traitValue = blockState.getTraitValue(blockTrait.get());
+                        if (traitValue.isPresent()) {
+                            if (!traitValue.get().toString().equals(entry.getValue())) {
+                                statesMatch = false;
+                            }
+                        } else {
+                            statesMatch = false;
+                        }
+                    } else {
+                        statesMatch = false;
+                    }
+                }
+                if (statesMatch) {
+                    return Optional.of(harvestable);
+                }
             }
         }
         return Optional.empty();
@@ -72,7 +90,7 @@ public class HarvestListener {
         Timestamp respawnDate = new Timestamp(Calendar.getInstance().getTime().getTime());
         respawnDate.setTime(respawnDate.getTime()/1000 + respawnDelay);
         RespawningBlockBean respawningBlock = new RespawningBlockBean(position.getX(), position.getY(), position.getZ(),
-                harvestable.getType(), (int)respawnDate.getTime());
+                harvestable.getType(), BlockStateSerializer.serialize(harvestable.getStates()), (int)respawnDate.getTime());
         RespawningBlockDao.addRespawningBlock(respawningBlock);
     }
 
@@ -89,9 +107,30 @@ public class HarvestListener {
             Location<World> location = new Location<World>(world, block.getX(), block.getY(), block.getZ());
             Optional<BlockType> replacingType = Sponge.getRegistry().getType(BlockType.class, block.getBlockType());
             if (replacingType.isPresent()) {
-                location.setBlockType(replacingType.get(), Cause.source(Sponge.getPluginManager().getPlugin("harvester").get()).build());
-}
+                Map<String, String> state = BlockStateSerializer.deserialize(block.getSerializedBlockStates());
+                location.setBlock(addTraits(replacingType.get(), state), Cause.source(Sponge.getPluginManager().getPlugin("harvester").get()).build());
+            }
         }
         RespawningBlockDao.removeRespawningBlocks(respawningBlocks);
+    }
+
+    /**
+     * Add block traits to a future block
+     * @param blockType Type of the block
+     * @param traits Map containing all the traits
+     * @return BlockState of the future block
+     */
+    static private BlockState addTraits(BlockType blockType, Map<String, String> traits) {
+        BlockState blockState = blockType.getDefaultState();
+        for (Map.Entry<String, String> trait : traits.entrySet()) {
+            Optional<BlockTrait<?>> optTrait = blockState.getTrait(trait.getKey());
+            if (optTrait.isPresent()) {
+                Optional<BlockState> newBlockState = blockState.withTrait(optTrait.get(), trait.getValue());
+                if (newBlockState.isPresent()) {
+                    blockState = newBlockState.get();
+                }
+            }
+        }
+        return blockState;
     }
 }

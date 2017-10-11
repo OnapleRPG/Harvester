@@ -11,22 +11,26 @@ public class RespawningBlockBean {
     private int z;
     /** Type of the block **/
     private String block_type;
+    /** States to apply to block **/
+    private String serializedBlockStates;
     /** Timestamp when block must respawn **/
     private int respawnTime;
 
-    public RespawningBlockBean(int x, int y, int z, String block_type, int respawnTime) {
+    public RespawningBlockBean(int x, int y, int z, String block_type, String serializedBlockStates, int respawnTime) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.block_type = block_type;
+        this.serializedBlockStates = serializedBlockStates;
         this.respawnTime = respawnTime;
     }
-    public RespawningBlockBean(int id, int x, int y, int z, String block_type, int respawnTime) {
+    public RespawningBlockBean(int id, int x, int y, int z, String block_type, String serializedBlockStates, int respawnTime) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
         this.block_type = block_type;
+        this.serializedBlockStates = serializedBlockStates;
         this.respawnTime = respawnTime;
     }
 
@@ -63,6 +67,13 @@ public class RespawningBlockBean {
     }
     public void setBlockType(String block_type) {
         this.block_type = block_type;
+    }
+
+    public String getSerializedBlockStates() {
+        return serializedBlockStates;
+    }
+    public void setSerializedBlockStates(String serialized_block_states) {
+        this.serializedBlockStates = serialized_block_states;
     }
 
     public int getRespawnTime() {
