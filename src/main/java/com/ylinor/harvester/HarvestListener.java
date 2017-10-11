@@ -85,7 +85,8 @@ public class HarvestListener {
      */
     private void registerRespawningBlock(HarvestableBean harvestable, Vector3i position) {
         Random random = new Random();
-        int respawnMin = harvestable.getRespawnMin()*60, respawnMax = harvestable.getRespawnMax()*60;
+        int respawnMin = harvestable.getRespawnMin()*60;
+        int respawnMax = harvestable.getRespawnMax()*60;
         int respawnDelay = random.nextInt((respawnMax - respawnMin)+1) + respawnMin;
         Timestamp respawnDate = new Timestamp(Calendar.getInstance().getTime().getTime());
         respawnDate.setTime(respawnDate.getTime()/1000 + respawnDelay);
@@ -97,14 +98,14 @@ public class HarvestListener {
     /**
      * Check if resources need to be respawn and do it if necessary
      */
-    static public void checkBlockRespawn() {
+    public static void checkBlockRespawn() {
         World world = Sponge.getServer().getWorld("world").get();
         List<RespawningBlockBean> respawningBlocks = RespawningBlockDao.getRespawningBlocks();
-        if (respawningBlocks.size() > 0) {
+        if (!respawningBlocks.isEmpty()) {
             Harvester.getLogger().info("Respawning resources : " + respawningBlocks.size() + " resources.");
         }
         for (RespawningBlockBean block: respawningBlocks) {
-            Location<World> location = new Location<World>(world, block.getX(), block.getY(), block.getZ());
+            Location<World> location = new Location<>(world, block.getX(), block.getY(), block.getZ());
             Optional<BlockType> replacingType = Sponge.getRegistry().getType(BlockType.class, block.getBlockType());
             if (replacingType.isPresent()) {
                 Map<String, String> state = BlockStateSerializer.deserialize(block.getSerializedBlockStates());
@@ -120,7 +121,7 @@ public class HarvestListener {
      * @param traits Map containing all the traits
      * @return BlockState of the future block
      */
-    static private BlockState addTraits(BlockType blockType, Map<String, String> traits) {
+    private static BlockState addTraits(BlockType blockType, Map<String, String> traits) {
         BlockState blockState = blockType.getDefaultState();
         for (Map.Entry<String, String> trait : traits.entrySet()) {
             Optional<BlockTrait<?>> optTrait = blockState.getTrait(trait.getKey());
