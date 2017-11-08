@@ -36,7 +36,7 @@ public class RespawningBlockDao {
      * @return List of respawning blocks
      */
     public static List<RespawningBlockBean> getRespawningBlocks() {
-        String query = "SELECT id, x, y, z, block_type, serialized_block_states, respawn_time AS datediff FROM respawning_block WHERE DATEDIFF('s', '1970-01-01', CURRENT_TIMESTAMP)-2*60*60 > respawn_time";
+        String query = "SELECT id, x, y, z, block_type, serialized_block_states, respawn_time AS datediff FROM respawning_block WHERE DATEDIFF('s', '1970-01-01', CURRENT_TIMESTAMP)-1*60*60 > respawn_time";
         List<RespawningBlockBean> respawningBlocks = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
