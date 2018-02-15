@@ -57,7 +57,7 @@ public class HarvestListener {
     }
 
     /**
-     * Cancel block breaking dropping event
+     * Cancel block breaking dropping event unless specified in config
      * @param event Item dropping event
      */
     @Listener
@@ -141,7 +141,7 @@ public class HarvestListener {
             Optional<BlockType> replacingType = Sponge.getRegistry().getType(BlockType.class, block.getBlockType());
             if (replacingType.isPresent()) {
                 Map<String, String> state = BlockStateSerializer.deserialize(block.getSerializedBlockStates());
-                location.setBlock(addTraits(replacingType.get(), state), Cause.source(Sponge.getPluginManager().getPlugin("harvester").get()).build());
+                location.setBlock(addTraits(replacingType.get(), state), Cause.source(Harvester.getInstance()).build());
             }
         }
         RespawningBlockDao.removeRespawningBlocks(respawningBlocks);

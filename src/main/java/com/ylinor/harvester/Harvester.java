@@ -10,6 +10,7 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 
 import java.nio.file.Path;
@@ -29,6 +30,10 @@ public class Harvester {
 	}
 	public static Logger getLogger() {
 		return logger;
+	}
+
+	public static PluginContainer getInstance(){
+		return  Sponge.getPluginManager().getPlugin("harvester").get();
 	}
 
 	@Listener
