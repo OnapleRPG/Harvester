@@ -37,6 +37,7 @@ public class Harvester {
         ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvestables.conf"));
 
         Sponge.getEventManager().registerListeners(this, new HarvestListener());
+		Sponge.getEventManager().registerListeners(this, new DropListener());
         Task.builder().execute(() -> HarvestListener.checkBlockRespawn())
                 .async().delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);
