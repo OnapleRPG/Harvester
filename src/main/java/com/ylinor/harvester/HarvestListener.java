@@ -23,8 +23,10 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
@@ -46,10 +48,31 @@ public class HarvestListener {
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
                     registerRespawningBlock(harvestable, transaction.getOriginal().getPosition());
+                    spawnItemStack(ItemStack.builder().itemType(ItemTypes.COOKED_PORKCHOP).build(), transaction.getOriginal().getLocation().get());
                     return;
                 }
             }
             event.setCancelled(true);
+        }
+    }
+
+    /**
+     * Cancel block breaking dropping event
+     * @param event Item dropping event
+     */
+    @Listener
+    public void onDropItemEvent(DropItemEvent.Destruct event) {
+        List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
+        Optional<Player> player = event.getCause().first(Player.class);
+        if (player.isPresent()) {
+            for (Entity entity: event.getEntities()) {
+                Optional<ItemStackSnapshot> stack = entity.get(Keys.REPRESENTED_ITEM);
+                if (stack.isPresent()) {
+                    if (!defaultDrops.contains(stack.get().getType().getId())) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
         }
     }
 
@@ -142,5 +165,18 @@ public class HarvestListener {
             }
         }
         return blockState;
+    }
+
+    /**
+     * Spawn an itemstack at a given block position
+     * @param itemStack Item to spawn
+     * @param location Location of the block
+     */
+    public void spawnItemStack(ItemStack itemStack, Location<World> location) {
+        location = location.add(0.5, 0.25, 0.5);
+        Extent extent = location.getExtent();
+        Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
+        itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
+        extent.spawnEntity(itemEntity, Cause.source(EntitySpawnCause.builder().entity(itemEntity).type(SpawnTypes.PLUGIN).build()).build());
     }
 }

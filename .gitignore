@@ -8,3 +8,4 @@ gradle.properties
 build/*
 !build/libs
 !build/libs/Harvester.jar
+/build/libs/Harvester.jar

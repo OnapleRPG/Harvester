@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.ylinor.harvester.Harvester;
 import com.ylinor.harvester.data.beans.HarvestableBean;
 import com.ylinor.harvester.data.serializers.HarvestableSerializer;
+import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -19,13 +20,17 @@ public class ConfigurationHandler {
     private ConfigurationHandler() {}
 
     private static List<HarvestableBean> harvestableList;
+    private static List<String> harvestDefaultDropList;
 
     public static List<HarvestableBean> getHarvestableList(){
         return harvestableList;
     }
+    public static List<String> getHarvestDefaultDropList(){
+        return harvestDefaultDropList;
+    }
 
     /**
-     * Read configuration and interpret it
+     * Read harvestable configuration and interpret it
      * @param configurationNode ConfigurationNode to read from
      */
     public static void readHarvestablesConfiguration(CommentedConfigurationNode configurationNode){
@@ -38,6 +43,21 @@ public class ConfigurationHandler {
             }
         } catch (ObjectMappingException e) {
             Harvester.getLogger().error("Error while reading configuration 'harvestables' : " + e.getMessage());
+        }
+    }
+
+    /**
+     * Read block drops configuration and interpret it
+     * @param configurationNode ConfigurationNode to read from
+     */
+    public static void readHarvestDropsConfiguration(CommentedConfigurationNode configurationNode) {
+        harvestDefaultDropList = new ArrayList<>();
+        List<? extends ConfigurationNode> defaultDropNodeList = configurationNode.getNode("default").getChildrenList();
+        for (ConfigurationNode defaultDropNode : defaultDropNodeList) {
+            String defaultDropType = defaultDropNode.getString();
+            if (!defaultDropType.isEmpty()) {
+                harvestDefaultDropList.add(defaultDropType);
+            }
         }
     }
 
