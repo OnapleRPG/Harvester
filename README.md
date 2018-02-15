@@ -5,6 +5,8 @@ according to the rules described in a configuration file.
 
 ## Configuration file
 
+### Harvest regeneration
+
 A file named __*harvestables.conf*__ needs to be created into the _config_ folder of the server.
 This file is going to describe which blocks can be broke and when they will respawn.  
 
@@ -34,3 +36,40 @@ harvestables = [
 ```
 _Following the above example, dirt can be mined and will respawn between 2 and 5 minutes later.
 Only the andesite variant of stone can be broken, and it will respawn between 5 and 10 minutes later._
+
+### Harvest drops
+
+A file named __*harvest_drops.conf*__ must exist into the _config_folder of the server.
+It is used to define the items that will come out of the mined blocks.
+
+The file also uses HOCON and contains two arrays :  
+* The __default__ array contains the resources that will not disappear once mined. By default, any vanilla drop will not happen.
+It contains a list of the resources that will drop as is on a vanilla server.
+* The __harvest_items__ array contains the data specifying which item we want to be dropped for a block
+    * __type__ is the name of the block affected
+    * _(Optional)_ The __state__ object, if present, specify that only a subtype of a block is affected
+    * _(Optional)_ The __item_name__, when present, defines an item by its name
+    * _(Optional)_ The __item_ref__, when present, mean that the plugin will try to communicate with Itemizer plugin to 
+    retrieve a configured item identified by its id
+    * _(Optional)_ The __pool_ref__, when present, will fetch an item (or nothing) from an itempool from the plugin Itemizer
+
+```
+default = [
+   	"minecraft:dirt",
+   	"minecraft:wood"
+]
+harvest_items = [
+   {
+       type: "minecraft:stone",
+       state {
+           variant { value = "diorite" }
+       },
+       item_name: "minecraft:cobblestone",
+       item_ref: 2,
+       pool_ref: 1
+   }
+]
+```
+_Following the above example, dirt and wood are going to drop their respective items, whereas diorite stone will drop a
+cobblestone block, the item number 2 of Itemizer, and an item from the first Itemizer pool. Note that we could have 
+writen only one or two of the three item fetchers._
