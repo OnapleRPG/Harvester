@@ -4,6 +4,8 @@ import javax.inject.Inject;
 
 import com.ylinor.harvester.data.dao.RespawningBlockDao;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
+import com.ylinor.harvester.utils.SpawnUtil;
+import com.ylinor.itemizer.service.IItemService;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -32,10 +34,6 @@ public class Harvester {
 		return logger;
 	}
 
-	public static PluginContainer getInstance(){
-		return  Sponge.getPluginManager().getPlugin("harvester").get();
-	}
-
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {
 		RespawningBlockDao.createTableIfNotExist();
@@ -43,7 +41,7 @@ public class Harvester {
 		ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvest_drops.conf"));
 
         Sponge.getEventManager().registerListeners(this, new HarvestListener());
-        Task.builder().execute(() -> HarvestListener.checkBlockRespawn())
+        Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
                 .async().delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);
 

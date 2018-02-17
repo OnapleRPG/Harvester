@@ -2,7 +2,9 @@ package com.ylinor.harvester.data.handlers;
 
 import com.google.common.reflect.TypeToken;
 import com.ylinor.harvester.Harvester;
+import com.ylinor.harvester.data.beans.HarvestDropBean;
 import com.ylinor.harvester.data.beans.HarvestableBean;
+import com.ylinor.harvester.data.serializers.HarvestDropSerializer;
 import com.ylinor.harvester.data.serializers.HarvestableSerializer;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -21,12 +23,16 @@ public class ConfigurationHandler {
 
     private static List<HarvestableBean> harvestableList;
     private static List<String> harvestDefaultDropList;
+    private static List<HarvestDropBean> harvestDropList;
 
     public static List<HarvestableBean> getHarvestableList(){
         return harvestableList;
     }
     public static List<String> getHarvestDefaultDropList(){
         return harvestDefaultDropList;
+    }
+    public static List<HarvestDropBean> getHarvestDropList() {
+        return harvestDropList;
     }
 
     /**
@@ -38,9 +44,6 @@ public class ConfigurationHandler {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(HarvestableBean.class), new HarvestableSerializer());
         try {
             harvestableList = configurationNode.getNode("harvestables").getList(TypeToken.of(HarvestableBean.class));
-            for (HarvestableBean harvestable: harvestableList) {
-                Harvester.getLogger().debug("Harvestable from config : " + harvestable.getType());
-            }
         } catch (ObjectMappingException e) {
             Harvester.getLogger().error("Error while reading configuration 'harvestables' : " + e.getMessage());
         }
@@ -58,6 +61,13 @@ public class ConfigurationHandler {
             if (!defaultDropType.isEmpty()) {
                 harvestDefaultDropList.add(defaultDropType);
             }
+        }
+        harvestDropList = new ArrayList<>();
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(HarvestDropBean.class), new HarvestDropSerializer());
+        try {
+            harvestDropList = configurationNode.getNode("harvest_items").getList(TypeToken.of(HarvestDropBean.class));
+        } catch (ObjectMappingException e) {
+            Harvester.getLogger().error("Error while reading configuration 'harvest_drops' : " + e.getMessage());
         }
     }
 

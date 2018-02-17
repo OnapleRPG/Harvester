@@ -1,11 +1,15 @@
 package com.ylinor.harvester;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.ylinor.harvester.data.beans.HarvestDropBean;
 import com.ylinor.harvester.data.beans.HarvestableBean;
 import com.ylinor.harvester.data.beans.RespawningBlockBean;
 import com.ylinor.harvester.data.dao.RespawningBlockDao;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
 import com.ylinor.harvester.data.serializers.BlockStateSerializer;
+import com.ylinor.harvester.utils.DropUtil;
+import com.ylinor.harvester.utils.SpawnUtil;
+import com.ylinor.itemizer.service.IItemService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -18,12 +22,9 @@ import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
-import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
@@ -47,8 +48,9 @@ public class HarvestListener {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
-                    registerRespawningBlock(harvestable, transaction.getOriginal().getPosition());
-                    spawnItemStack(ItemStack.builder().itemType(ItemTypes.COOKED_PORKCHOP).build(), transaction.getOriginal().getLocation().get());
+                    BlockSnapshot blockSnapshot = transaction.getOriginal();
+                    SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition());
+                    DropUtil.spawnConfiguredDrop(blockSnapshot.getState(), blockSnapshot.getLocation().get());
                     return;
                 }
             }
@@ -109,74 +111,5 @@ public class HarvestListener {
             }
         }
         return Optional.empty();
-    }
-
-    /**
-     * Register a mined block in database so it can be respawn later
-     * @param harvestable Block to respawn later
-     */
-    private void registerRespawningBlock(HarvestableBean harvestable, Vector3i position) {
-        Random random = new Random();
-        int respawnMin = harvestable.getRespawnMin()*60;
-        int respawnMax = harvestable.getRespawnMax()*60;
-        int respawnDelay = random.nextInt((respawnMax - respawnMin)+1) + respawnMin;
-        Timestamp respawnDate = new Timestamp(Calendar.getInstance().getTime().getTime());
-        respawnDate.setTime(respawnDate.getTime()/1000 + respawnDelay);
-        RespawningBlockBean respawningBlock = new RespawningBlockBean(position.getX(), position.getY(), position.getZ(),
-                harvestable.getType(), BlockStateSerializer.serialize(harvestable.getStates()), (int)respawnDate.getTime());
-        RespawningBlockDao.addRespawningBlock(respawningBlock);
-    }
-
-    /**
-     * Check if resources need to be respawn and do it if necessary
-     */
-    public static void checkBlockRespawn() {
-        World world = Sponge.getServer().getWorld("world").get();
-        List<RespawningBlockBean> respawningBlocks = RespawningBlockDao.getRespawningBlocks();
-        if (!respawningBlocks.isEmpty()) {
-            Harvester.getLogger().info("Respawning resources : " + respawningBlocks.size() + " resources.");
-        }
-        for (RespawningBlockBean block: respawningBlocks) {
-            Location<World> location = new Location<>(world, block.getX(), block.getY(), block.getZ());
-            Optional<BlockType> replacingType = Sponge.getRegistry().getType(BlockType.class, block.getBlockType());
-            if (replacingType.isPresent()) {
-                Map<String, String> state = BlockStateSerializer.deserialize(block.getSerializedBlockStates());
-                location.setBlock(addTraits(replacingType.get(), state), Cause.source(Harvester.getInstance()).build());
-            }
-        }
-        RespawningBlockDao.removeRespawningBlocks(respawningBlocks);
-    }
-
-    /**
-     * Add block traits to a future block
-     * @param blockType Type of the block
-     * @param traits Map containing all the traits
-     * @return BlockState of the future block
-     */
-    private static BlockState addTraits(BlockType blockType, Map<String, String> traits) {
-        BlockState blockState = blockType.getDefaultState();
-        for (Map.Entry<String, String> trait : traits.entrySet()) {
-            Optional<BlockTrait<?>> optTrait = blockState.getTrait(trait.getKey());
-            if (optTrait.isPresent()) {
-                Optional<BlockState> newBlockState = blockState.withTrait(optTrait.get(), trait.getValue());
-                if (newBlockState.isPresent()) {
-                    blockState = newBlockState.get();
-                }
-            }
-        }
-        return blockState;
-    }
-
-    /**
-     * Spawn an itemstack at a given block position
-     * @param itemStack Item to spawn
-     * @param location Location of the block
-     */
-    public void spawnItemStack(ItemStack itemStack, Location<World> location) {
-        location = location.add(0.5, 0.25, 0.5);
-        Extent extent = location.getExtent();
-        Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
-        itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
-        extent.spawnEntity(itemEntity, Cause.source(EntitySpawnCause.builder().entity(itemEntity).type(SpawnTypes.PLUGIN).build()).build());
     }
 }
