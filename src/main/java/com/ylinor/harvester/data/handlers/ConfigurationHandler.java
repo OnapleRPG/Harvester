@@ -39,21 +39,22 @@ public class ConfigurationHandler {
      * Read harvestable configuration and interpret it
      * @param configurationNode ConfigurationNode to read from
      */
-    public static void readHarvestablesConfiguration(CommentedConfigurationNode configurationNode){
+    public static int readHarvestablesConfiguration(CommentedConfigurationNode configurationNode) throws ObjectMappingException {
         harvestableList = new ArrayList<>();
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(HarvestableBean.class), new HarvestableSerializer());
-        try {
+        //try {
             harvestableList = configurationNode.getNode("harvestables").getList(TypeToken.of(HarvestableBean.class));
-        } catch (ObjectMappingException e) {
+            return harvestableList.size();
+      /*  } catch (ObjectMappingException e) {
             Harvester.getLogger().error("Error while reading configuration 'harvestables' : " + e.getMessage());
-        }
+        }*/
     }
 
     /**
      * Read block drops configuration and interpret it
      * @param configurationNode ConfigurationNode to read from
      */
-    public static void readHarvestDropsConfiguration(CommentedConfigurationNode configurationNode) {
+    public static int readHarvestDropsConfiguration(CommentedConfigurationNode configurationNode) throws ObjectMappingException {
         harvestDefaultDropList = new ArrayList<>();
         List<? extends ConfigurationNode> defaultDropNodeList = configurationNode.getNode("default").getChildrenList();
         for (ConfigurationNode defaultDropNode : defaultDropNodeList) {
@@ -64,11 +65,12 @@ public class ConfigurationHandler {
         }
         harvestDropList = new ArrayList<>();
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(HarvestDropBean.class), new HarvestDropSerializer());
-        try {
+      //  try {
             harvestDropList = configurationNode.getNode("harvest_items").getList(TypeToken.of(HarvestDropBean.class));
-        } catch (ObjectMappingException e) {
+            return harvestDropList.size();
+       /* } catch (ObjectMappingException e) {
             Harvester.getLogger().error("Error while reading configuration 'harvest_drops' : " + e.getMessage());
-        }
+        }*/
     }
 
     /**
@@ -76,14 +78,14 @@ public class ConfigurationHandler {
      * @param configName Name of the configuration in the configuration folder
      * @return Configuration ready to be used
      */
-    public static CommentedConfigurationNode loadConfiguration(String configName) {
+    public static CommentedConfigurationNode loadConfiguration(String configName) throws IOException {
         ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
         CommentedConfigurationNode configNode = null;
-        try {
+      //  try {
             configNode = configLoader.load();
-        } catch (IOException e) {
+      /*  } catch (IOException e) {
             Harvester.getLogger().error("Error while loading configuration '" + configName + "' : " + e.getMessage());
-        }
+        }*/
         return configNode;
     }
 }

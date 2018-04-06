@@ -24,51 +24,64 @@ public class DropUtil {
 
     /**
      * Spawn configured drops for a given block at a given location
+     *
      * @param blockState Block that has been destroyed
-     * @param location Location of the block
+     * @param location   Location of the block
      */
     public static void spawnConfiguredDrop(BlockState blockState, Location<World> location) {
         Optional<HarvestDropBean> optionalHarvestDrop = identifyHarvestDrop(blockState);
         if (optionalHarvestDrop.isPresent()) {
             HarvestDropBean harvestDrop = optionalHarvestDrop.get();
-            try {
-                Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);
-                if (optionalIItemService.isPresent()) {
-                    IItemService iItemService = optionalIItemService.get();
-                    if (harvestDrop.getItemRef() > 0) {
-                        Optional<ItemStack> refItem = iItemService.retrieve(harvestDrop.getItemRef());
-                        if (refItem.isPresent()) {
-                            spawnItemStack(refItem.get(), location);
-                        }
-                    }
-                    if (harvestDrop.getPoolRef() > 0) {
-                        Optional<ItemStack> poolItem = iItemService.fetch(harvestDrop.getPoolRef());
-                        if (poolItem.isPresent()) {
-                            spawnItemStack(poolItem.get(), location);
-                        }
-                    }
-                }
-            } catch (NoClassDefFoundError e) {
-            }
-            if (harvestDrop.getName() != null) {
-                Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDrop.getName());
-                if (optionalType.isPresent()) {
-                    ItemStack namedItem = ItemStack.builder().itemType(optionalType.get()).build();
-                    spawnItemStack(namedItem, location);
-                }
-            }
+            spawnItemStack(location.getExtent(),getItemStackEntity(location,getConfiguredDrop(harvestDrop)));
         }
     }
 
     /**
+     * Get ItemStack from harvester drop configuration
+     *
+     * @param harvestDropBean
+     * @return the matching itemStack by id,pool or name
+     */
+    public static ItemStack getConfiguredDrop(HarvestDropBean harvestDropBean) {
+        try {
+            Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);
+            if (optionalIItemService.isPresent()) {
+                IItemService iItemService = optionalIItemService.get();
+                if (harvestDropBean.getItemRef() > 0) {
+                    Optional<ItemStack> refItem = iItemService.retrieve(harvestDropBean.getItemRef());
+                    if (refItem.isPresent()) {
+                        return refItem.get();
+                    }
+                }
+                if (harvestDropBean.getPoolRef() > 0) {
+                    Optional<ItemStack> poolItem = iItemService.fetch(harvestDropBean.getPoolRef());
+                    if (poolItem.isPresent()) {
+                        return poolItem.get();
+                    }
+                }
+            }
+        } catch (NoClassDefFoundError e) {
+        }
+        if (harvestDropBean.getName() != null) {
+            Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDropBean.getName());
+            if (optionalType.isPresent()) {
+                return ItemStack.builder().itemType(optionalType.get()).build();
+
+            }
+        }
+        return null;
+    }
+
+    /**
      * Return harvestable drop if present in configuration
+     *
      * @param blockState Block to identify drop from
      * @return Optional of harvest drop
      */
-    private static Optional<HarvestDropBean> identifyHarvestDrop(BlockState blockState) {
+    public static Optional<HarvestDropBean> identifyHarvestDrop(BlockState blockState) {
         String blockTypeName = blockState.getType().getName().trim();
         List<HarvestDropBean> harvestDrops = ConfigurationHandler.getHarvestDropList();
-        for (HarvestDropBean harvestDrop: harvestDrops) {
+        for (HarvestDropBean harvestDrop : harvestDrops) {
             if (harvestDrop.getBlockType().trim().equals(blockTypeName)) {
                 boolean statesMatch = true;
                 Map<String, String> blockTraits = harvestDrop.getBlockStates();
@@ -96,15 +109,24 @@ public class DropUtil {
     }
 
     /**
-     * Spawn an itemstack at a given block position
-     * @param itemStack Item to spawn
-     * @param location Location of the block
+     * Spawn the itemStack
+     * @param extent
+     * @param itemEntity
      */
-    public static void spawnItemStack(ItemStack itemStack, Location<World> location) {
-        location = location.add(0.5, 0.25, 0.5);
+    public static void spawnItemStack(Extent extent, Entity itemEntity) {
+        extent.spawnEntity(itemEntity);
+    }
+
+    /**
+     * get an itemstack at a given block position
+     *
+     * @param itemStack Item to spawn
+     * @param location  Location of the block
+     */
+    public static Entity getItemStackEntity(Location location,ItemStack itemStack){
         Extent extent = location.getExtent();
         Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
         itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
-        extent.spawnEntity(itemEntity);
+        return itemEntity;
     }
 }

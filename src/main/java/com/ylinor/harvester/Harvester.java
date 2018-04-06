@@ -5,16 +5,21 @@ import javax.inject.Inject;
 import com.ylinor.harvester.data.dao.RespawningBlockDao;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
 import com.ylinor.harvester.utils.SpawnUtil;
+import com.ylinor.itemizer.commands.ReloadCommand;
 import com.ylinor.itemizer.service.IItemService;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class Harvester {
 
 	@Inject
-    @ConfigDir(sharedRoot=true)
+    @ConfigDir(sharedRoot=false)
     private Path configDir;
 
 	private static Logger logger;
@@ -34,17 +39,51 @@ public class Harvester {
 		return logger;
 	}
 
+	private static Harvester harvester;
+
+	public static Harvester getHarvester() {
+		return harvester;
+	}
+
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {
-		RespawningBlockDao.createTableIfNotExist();
-        ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvestables.conf"));
-		ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvest_drops.conf"));
+			harvester = this;
+			RespawningBlockDao.createTableIfNotExist();
+		try {
+			logger.info("Number of Block in configuration : " + loadHarvestable());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ObjectMappingException e) {
+			e.printStackTrace();
+		}
+		try {
+			logger.info("Number of drops in configuration : " + loadDrops());
 
-        Sponge.getEventManager().registerListeners(this, new HarvestListener());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ObjectMappingException e) {
+			e.printStackTrace();
+		}
+		Sponge.getEventManager().registerListeners(this, new HarvestListener());
         Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
-                .async().delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
+                .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);
 
+		CommandSpec reload = CommandSpec.builder()
+				.description(Text.of("Reaload Harvester configuration from files."))
+				.permission("harvester.admin")
+				.executor(new ReloadCommand()).build();
+		Sponge.getCommandManager().register(this, reload, "reload-harvester");
+
+
         logger.info("HARVESTER initialized.");
+	}
+	public int loadHarvestable() throws IOException, ObjectMappingException {
+		return ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvestables.conf"));
+	}
+
+	public int loadDrops() throws IOException, ObjectMappingException {
+		return ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/drops.conf"));
+
 	}
 }

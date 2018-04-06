@@ -10,6 +10,7 @@ import com.ylinor.harvester.data.serializers.BlockStateSerializer;
 import com.ylinor.harvester.utils.DropUtil;
 import com.ylinor.harvester.utils.SpawnUtil;
 import com.ylinor.itemizer.service.IItemService;
+import jdk.nashorn.internal.ir.Block;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
@@ -23,23 +24,29 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class HarvestListener {
+
     /**
-     * Handle actions occurring when blocks are destroyed
-     * @param event Resource destruction event
+     * Cancel block breaking dropping event unless specified in config
+     * @param event Item dropping event
      */
+
     @Listener
     public void onBlockBreakEvent(ChangeBlockEvent.Break event) {
         final Optional<Player> player = event.getCause().first(Player.class);
@@ -50,7 +57,7 @@ public class HarvestListener {
                     HarvestableBean harvestable = optionalHarvestable.get();
                     BlockSnapshot blockSnapshot = transaction.getOriginal();
                     SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition());
-                    DropUtil.spawnConfiguredDrop(blockSnapshot.getState(), blockSnapshot.getLocation().get());
+
                     return;
                 }
             }
@@ -58,27 +65,28 @@ public class HarvestListener {
         }
     }
 
-    /**
-     * Cancel block breaking dropping event unless specified in config
-     * @param event Item dropping event
-     */
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event) {
-        List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
-        Optional<Player> player = event.getCause().first(Player.class);
-        if (player.isPresent()) {
-            for (Entity entity: event.getEntities()) {
-                Optional<ItemStackSnapshot> stack = entity.get(Keys.REPRESENTED_ITEM);
-                if (stack.isPresent()) {
-                    if (!defaultDrops.contains(stack.get().getType().getId())) {
-                        event.setCancelled(true);
-                    }
-                }
+        Object source = event.getSource();
+        if(source instanceof BlockSnapshot){
+            BlockSnapshot blockSnapshot = (BlockSnapshot) source;
+
+            Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState());
+            if (optionalHarvestable.isPresent()) {
+                event.getEntities().clear();
+                HarvestDropBean harvestable = optionalHarvestable.get();
+                ItemStack itemStack = DropUtil.getConfiguredDrop(harvestable);
+               event.getEntities().add(DropUtil.getItemStackEntity(event.getCause().first(Player.class).get().getLocation(),itemStack));
+                return;
+            }
+            else {
+                List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
+                event.filterEntities(entity -> ! defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get()));
             }
         }
     }
 
-    /**
+   /**
      * Return harvestable if present in configuration
      * @param blockState Block to identify
      * @return Optional of harvestable
