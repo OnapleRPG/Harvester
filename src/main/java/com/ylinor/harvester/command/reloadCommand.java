@@ -12,7 +12,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.io.IOException;
 
-public class reloadCommand implements CommandExecutor{
+public class ReloadCommand implements CommandExecutor{
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

@@ -24,6 +24,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.cause.EventContextKey;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.ItemType;
@@ -64,6 +65,13 @@ public class HarvestListener {
             event.setCancelled(true);
         }
     }
+
+    @Listener
+    public void onBlockGrowEvent(ChangeBlockEvent.Modify event){
+       event.getTransactions().stream().forEach(blockSnapshotTransaction ->  Harvester.getLogger().info(blockSnapshotTransaction.getDefault().toString()));
+       // event.getContext().asMap().entrySet().stream().forEach(eventContextKeyObjectEntry ->  Harvester.getLogger().info(eventContextKeyObjectEntry.toString()));
+    }
+
 
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event) {

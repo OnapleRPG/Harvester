@@ -2,14 +2,15 @@ package com.ylinor.harvester;
 
 import javax.inject.Inject;
 
+import com.ylinor.harvester.command.ReloadCommand;
 import com.ylinor.harvester.data.dao.RespawningBlockDao;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
 import com.ylinor.harvester.utils.SpawnUtil;
-import com.ylinor.itemizer.commands.ReloadCommand;
 import com.ylinor.itemizer.service.IItemService;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -18,6 +19,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.World;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class Harvester {
 
 	@Inject
-    @ConfigDir(sharedRoot=false)
+	@ConfigDir(sharedRoot=true)
     private Path configDir;
 
 	private static Logger logger;
@@ -72,18 +74,19 @@ public class Harvester {
 		CommandSpec reload = CommandSpec.builder()
 				.description(Text.of("Reaload Harvester configuration from files."))
 				.permission("harvester.admin")
-				.executor(new ReloadCommand()).build();
+				.executor(new com.ylinor.harvester.command.ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reload, "reload-harvester");
+
 
 
         logger.info("HARVESTER initialized.");
 	}
 	public int loadHarvestable() throws IOException, ObjectMappingException {
-		return ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvestables.conf"));
+		return ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/harvestables.conf"));
 	}
 
 	public int loadDrops() throws IOException, ObjectMappingException {
-		return ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/drops.conf"));
+		return ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/drops.conf"));
 
 	}
 }
