@@ -2,24 +2,19 @@ package com.ylinor.harvester;
 
 import javax.inject.Inject;
 
-import com.ylinor.harvester.command.ReloadCommand;
 import com.ylinor.harvester.data.dao.RespawningBlockDao;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
 import com.ylinor.harvester.utils.SpawnUtil;
-import com.ylinor.itemizer.service.IItemService;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.world.World;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -54,17 +49,17 @@ public class Harvester {
 		try {
 			logger.info("Number of Block in configuration : " + loadHarvestable());
 		} catch (IOException e) {
-			logger.error("IOException : " + e.getMessage());
+			logger.error("IOException : ".concat(e.getMessage()));
 		} catch (ObjectMappingException e) {
-			logger.error("ObjectMappingException : " + e.getMessage());
+			logger.error("ObjectMappingException : ".concat(e.getMessage()));
 		}
 		try {
 			logger.info("Number of drops in configuration : " + loadDrops());
 
 		} catch (IOException e) {
-			logger.error("IOException : " + e.getMessage());
+			logger.error("IOException : ".concat(e.getMessage()));
 		} catch (ObjectMappingException e) {
-			logger.error("ObjectMappingException : " + e.getMessage());
+			logger.error("ObjectMappingException : ".concat(e.getMessage()));
 		}
 		Sponge.getEventManager().registerListeners(this, new HarvestListener());
         Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())

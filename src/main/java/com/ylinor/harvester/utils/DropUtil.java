@@ -1,6 +1,5 @@
 package com.ylinor.harvester.utils;
 
-import com.ylinor.harvester.Harvester;
 import com.ylinor.harvester.data.beans.HarvestDropBean;
 import com.ylinor.harvester.data.handlers.ConfigurationHandler;
 import com.ylinor.itemizer.service.IItemService;
@@ -86,29 +85,39 @@ public class DropUtil {
         List<HarvestDropBean> harvestDrops = ConfigurationHandler.getHarvestDropList();
         for (HarvestDropBean harvestDrop : harvestDrops) {
             if (harvestDrop.getBlockType().trim().equals(blockTypeName)) {
-                boolean statesMatch = true;
-                Map<String, String> blockTraits = harvestDrop.getBlockStates();
-                for (Map.Entry<String, String> entry : blockTraits.entrySet()) {
-                    Optional<BlockTrait<?>> blockTrait = blockState.getTrait(entry.getKey());
-                    if (blockTrait.isPresent()) {
-                        Optional<?> traitValue = blockState.getTraitValue(blockTrait.get());
-                        if (traitValue.isPresent()) {
-                            if (!traitValue.get().toString().equals(entry.getValue())) {
-                                statesMatch = false;
-                            }
-                        } else {
-                            statesMatch = false;
-                        }
-                    } else {
-                        statesMatch = false;
-                    }
-                }
+                boolean statesMatch = blockHasTraits(harvestDrop.getBlockStates(), blockState);
                 if (statesMatch) {
                     return Optional.of(harvestDrop);
                 }
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * Return true if block state has the given traits
+     * @param traits Traits required
+     * @param blockState State of the block to check
+     * @return boolean true if block matches
+     */
+    public static boolean blockHasTraits(Map<String, String> traits, BlockState blockState) {
+        boolean statesMatch = true;
+        for (Map.Entry<String, String> entry : traits.entrySet()) {
+            Optional<BlockTrait<?>> blockTrait = blockState.getTrait(entry.getKey());
+            if (blockTrait.isPresent()) {
+                Optional<?> traitValue = blockState.getTraitValue(blockTrait.get());
+                if (traitValue.isPresent()) {
+                    if (!traitValue.get().toString().equals(entry.getValue())) {
+                        statesMatch = false;
+                    }
+                } else {
+                    statesMatch = false;
+                }
+            } else {
+                statesMatch = false;
+            }
+        }
+        return statesMatch;
     }
 
     /**
