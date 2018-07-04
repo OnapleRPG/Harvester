@@ -49,22 +49,22 @@ public class Harvester {
 
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {
-			harvester = this;
-			RespawningBlockDao.createTableIfNotExist();
+		harvester = this;
+		RespawningBlockDao.createTableIfNotExist();
 		try {
 			logger.info("Number of Block in configuration : " + loadHarvestable());
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("IOException : " + e.getMessage());
 		} catch (ObjectMappingException e) {
-			e.printStackTrace();
+			logger.error("ObjectMappingException : " + e.getMessage());
 		}
 		try {
 			logger.info("Number of drops in configuration : " + loadDrops());
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("IOException : " + e.getMessage());
 		} catch (ObjectMappingException e) {
-			e.printStackTrace();
+			logger.error("ObjectMappingException : " + e.getMessage());
 		}
 		Sponge.getEventManager().registerListeners(this, new HarvestListener());
         Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())

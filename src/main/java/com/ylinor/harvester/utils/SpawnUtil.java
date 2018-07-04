@@ -38,7 +38,11 @@ public class SpawnUtil {
      * Check if resources need to be respawn and do it if necessary
      */
     public static void checkBlockRespawn() {
-        World world = Sponge.getServer().getWorld("world").get();
+        Optional<World> optionalWorld = Sponge.getServer().getWorld("world");
+        if (!optionalWorld.isPresent()) {
+            return;
+        }
+        World world = optionalWorld.get();
         List<RespawningBlockBean> respawningBlocks = RespawningBlockDao.getRespawningBlocks();
         if (!respawningBlocks.isEmpty()) {
             Harvester.getLogger().info("Respawning resources : " + respawningBlocks.size() + " resources.");

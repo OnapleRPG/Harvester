@@ -32,7 +32,10 @@ public class DropUtil {
         Optional<HarvestDropBean> optionalHarvestDrop = identifyHarvestDrop(blockState);
         if (optionalHarvestDrop.isPresent()) {
             HarvestDropBean harvestDrop = optionalHarvestDrop.get();
-            spawnItemStack(location.getExtent(),getItemStackEntity(location,getConfiguredDrop(harvestDrop)));
+            ItemStack itemDrop = getConfiguredDrop(harvestDrop);
+            if (itemDrop != null) {
+                spawnItemStack(location.getExtent(), getItemStackEntity(location, itemDrop));
+            }
         }
     }
 
@@ -123,7 +126,7 @@ public class DropUtil {
      * @param itemStack Item to spawn
      * @param location  Location of the block
      */
-    public static Entity getItemStackEntity(Location location,ItemStack itemStack){
+    public static Entity getItemStackEntity(Location location, ItemStack itemStack){
         Extent extent = location.getExtent();
         Entity itemEntity = extent.createEntity(EntityTypes.ITEM, location.getPosition());
         itemEntity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());

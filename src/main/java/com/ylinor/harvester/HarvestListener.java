@@ -84,12 +84,14 @@ public class HarvestListener {
                 event.getEntities().clear();
                 HarvestDropBean harvestable = optionalHarvestable.get();
                 ItemStack itemStack = DropUtil.getConfiguredDrop(harvestable);
-               event.getEntities().add(DropUtil.getItemStackEntity(event.getCause().first(Player.class).get().getLocation(),itemStack));
-                return;
+                Optional<Player> optionalPlayerCause = event.getCause().first(Player.class);
+                if (optionalPlayerCause.isPresent()) {
+                    event.getEntities().add(DropUtil.getItemStackEntity(optionalPlayerCause.get().getLocation(),itemStack));
+                }
             }
             else {
                 List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
-                event.filterEntities(entity -> ! defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get()));
+                event.filterEntities(entity -> ! defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
             }
         }
     }

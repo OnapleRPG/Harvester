@@ -4,6 +4,7 @@ import com.ylinor.harvester.Harvester;
 import com.ylinor.harvester.data.beans.RespawningBlockBean;
 import com.ylinor.harvester.data.handlers.DatabaseHandler;
 
+import javax.naming.ServiceUnavailableException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +25,8 @@ public class RespawningBlockDao {
             statement = connection.prepareStatement(query);
             statement.execute();
             statement.close();
+        } catch (ServiceUnavailableException e) {
+            Harvester.getLogger().error("Error while connecting to database : " + e.getMessage());
         } catch (SQLException e) {
             Harvester.getLogger().error("Error while creating respawning blocks table : " + e.getMessage());
         } finally {
@@ -51,6 +54,8 @@ public class RespawningBlockDao {
                         results.getString("serialized_block_states"), results.getInt("respawn_time")));
             }
             statement.close();
+        } catch (ServiceUnavailableException e) {
+            Harvester.getLogger().error("Error while connecting to database : " + e.getMessage());
         } catch (SQLException e) {
             Harvester.getLogger().error("Error while fetching respawning blocks : " + e.getMessage());
         } finally {
@@ -78,6 +83,8 @@ public class RespawningBlockDao {
             statement.setInt(6, block.getRespawnTime());
             statement.execute();
             statement.close();
+        } catch (ServiceUnavailableException e) {
+            Harvester.getLogger().error("Error while connecting to database : " + e.getMessage());
         } catch (SQLException e) {
             Harvester.getLogger().error("Error while inserting respawning block : " + e.getMessage());
         } finally {
@@ -101,6 +108,8 @@ public class RespawningBlockDao {
                 statement.execute();
                 statement.close();
             }
+        } catch (ServiceUnavailableException e) {
+            Harvester.getLogger().error("Error while connecting to database : " + e.getMessage());
         } catch (SQLException e) {
             Harvester.getLogger().error("Error while deleting respawning block : " + e.getMessage());
         } finally {

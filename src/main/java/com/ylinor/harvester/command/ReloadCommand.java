@@ -40,7 +40,7 @@ public class ReloadCommand implements CommandExecutor{
     }
     private void writeError(CommandSource src,Exception e) {
         src.sendMessage(Text.builder()
-                .append(Text.builder("configuration reload failed. ").color(TextColors.DARK_RED).build())
+                .append(Text.builder("Harvester configuration reload failed. ").color(TextColors.DARK_RED).build())
                 .append(Text.builder(e.getMessage()).color(TextColors.RED).build())
                 .build());
     }
