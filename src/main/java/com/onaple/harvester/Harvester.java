@@ -90,17 +90,33 @@ public class Harvester {
 
         logger.info("HARVESTER initialized.");
 	}
+
+	/**
+	 * Load Harvester configuration. If the config file does'nt exist, it load the default file
+	 * @return the number of harvestable block imported
+	 * @throws IOException error when copying default config in config/harvester/ folder
+	 * @throws ObjectMappingException error when the configuration file have an syntax error
+	 */
 	public int loadHarvestable() throws IOException, ObjectMappingException {
 		initDefaultConfig("harvestables.conf");
 		return ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/harvestables.conf"));
 	}
-
+	/**
+	 * Load drops configuration. If the config file does'nt exist, it load the default file
+	 * @return the number of drops imported
+	 * @throws IOException error when copying default config in config/harvester/ folder
+	 * @throws ObjectMappingException error when the configuration file have an syntax error
+	 */
 	public int loadDrops() throws IOException, ObjectMappingException {
 		initDefaultConfig("drops.conf");
 		return ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/drops.conf"));
 
 	}
 
+	/**
+	 * Load the default configuration from resources if no files found.
+	 * @param path
+	 */
 	public void initDefaultConfig(String path){
 		if (Files.notExists(Paths.get(configDir +"/harvester/" + path))) {
 			try {

@@ -32,10 +32,6 @@ public class HarvestListener {
     public void onBlockBreakEvent(ChangeBlockEvent.Break event) {
         final Optional<Player> player = event.getCause().first(Player.class);
         if (player.isPresent() && player.get().gameMode().get() != GameModes.CREATIVE) {
-            if(event.getContext().get(EventContextKeys.USED_ITEM).isPresent()) {
-                ItemStackSnapshot stackSnapshot = event.getContext().get(EventContextKeys.USED_ITEM).get();
-                player.get().sendMessage(Text.of(stackSnapshot));
-                }
 
             for (Transaction<BlockSnapshot> transaction: event.getTransactions()) {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
@@ -58,7 +54,8 @@ public class HarvestListener {
      */
     @Listener
     public void onBlockGrowEvent(ChangeBlockEvent.Modify event){
-       event.getTransactions().stream().forEach(blockSnapshotTransaction ->  Harvester.getLogger().info(blockSnapshotTransaction.getDefault().toString()));
+       //event.getTransactions().stream().forEach(blockSnapshotTransaction ->  Harvester.getLogger().info(blockSnapshotTransaction.getDefault().toString()));
+        event.setCancelled(true);
     }
 
 
