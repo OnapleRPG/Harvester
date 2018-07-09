@@ -24,15 +24,16 @@ publishing {
 
 repositories {
     mavenCentral()
-    maven { url 'https://oss.sonatype.org/service/local/staging/deploy/maven2' }
     maven { url 'https://jitpack.io' }
+    maven { url 'https://oss.sonatype.org/service/local/staging/deploy/maven2' }
+
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
-    compile 'org.spongepowered:spongeapi:6.0.0'
+    compile 'org.spongepowered:spongeapi:7.0.0'
     testCompile "junit:junit:4.11"
-    compile 'com.github.Ylinor:Itemizer:-SNAPSHOT'
+    implementation 'com.github.OnapleRPG:Itemizer:V0.1.1'
 }
 
 sonarqube {

@@ -1,4 +1,4 @@
-package com.ylinor.harvester.data.beans;
+package com.onaple.harvester.data.beans;
 
 public class RespawningBlockBean {
     /** Database id **/

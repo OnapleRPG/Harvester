@@ -1,10 +1,10 @@
-package com.ylinor.harvester;
+package com.onaple.harvester;
 
-import com.ylinor.harvester.data.beans.HarvestDropBean;
-import com.ylinor.harvester.data.beans.HarvestableBean;
-import com.ylinor.harvester.data.handlers.ConfigurationHandler;
-import com.ylinor.harvester.utils.DropUtil;
-import com.ylinor.harvester.utils.SpawnUtil;
+import com.onaple.harvester.data.beans.HarvestableBean;
+import com.onaple.harvester.data.handlers.ConfigurationHandler;
+import com.onaple.harvester.data.beans.HarvestDropBean;
+import com.onaple.harvester.utils.DropUtil;
+import com.onaple.harvester.utils.SpawnUtil;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.Transaction;
@@ -13,8 +13,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.text.Text;
 
 import java.util.*;
 
@@ -29,8 +32,14 @@ public class HarvestListener {
     public void onBlockBreakEvent(ChangeBlockEvent.Break event) {
         final Optional<Player> player = event.getCause().first(Player.class);
         if (player.isPresent() && player.get().gameMode().get() != GameModes.CREATIVE) {
+            if(event.getContext().get(EventContextKeys.USED_ITEM).isPresent()) {
+                ItemStackSnapshot stackSnapshot = event.getContext().get(EventContextKeys.USED_ITEM).get();
+                player.get().sendMessage(Text.of(stackSnapshot));
+                }
+
             for (Transaction<BlockSnapshot> transaction: event.getTransactions()) {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
+
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
                     BlockSnapshot blockSnapshot = transaction.getOriginal();
@@ -43,6 +52,10 @@ public class HarvestListener {
         }
     }
 
+    /**
+     * prevent wheat growing.
+     * @param event
+     */
     @Listener
     public void onBlockGrowEvent(ChangeBlockEvent.Modify event){
        event.getTransactions().stream().forEach(blockSnapshotTransaction ->  Harvester.getLogger().info(blockSnapshotTransaction.getDefault().toString()));

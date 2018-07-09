@@ -1,8 +1,8 @@
-package com.ylinor.harvester.data.dao;
+package com.onaple.harvester.data.dao;
 
-import com.ylinor.harvester.Harvester;
-import com.ylinor.harvester.data.beans.RespawningBlockBean;
-import com.ylinor.harvester.data.handlers.DatabaseHandler;
+import com.onaple.harvester.data.beans.RespawningBlockBean;
+import com.onaple.harvester.Harvester;
+import com.onaple.harvester.data.handlers.DatabaseHandler;
 
 import javax.naming.ServiceUnavailableException;
 import java.sql.Connection;

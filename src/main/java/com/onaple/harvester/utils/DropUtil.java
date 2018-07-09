@@ -1,7 +1,7 @@
-package com.ylinor.harvester.utils;
+package com.onaple.harvester.utils;
 
-import com.ylinor.harvester.data.beans.HarvestDropBean;
-import com.ylinor.harvester.data.handlers.ConfigurationHandler;
+import com.onaple.harvester.data.handlers.ConfigurationHandler;
+import com.onaple.harvester.data.beans.HarvestDropBean;
 import com.ylinor.itemizer.service.IItemService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;

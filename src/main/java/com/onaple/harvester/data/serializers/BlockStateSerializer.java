@@ -1,4 +1,4 @@
-package com.ylinor.harvester.data.serializers;
+package com.onaple.harvester.data.serializers;
 
 import java.util.HashMap;
 import java.util.Map;

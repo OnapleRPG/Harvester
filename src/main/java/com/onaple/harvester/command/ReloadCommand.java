@@ -1,6 +1,6 @@
-package com.ylinor.harvester.command;
+package com.onaple.harvester.command;
 
-import com.ylinor.harvester.Harvester;
+import com.onaple.harvester.Harvester;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;

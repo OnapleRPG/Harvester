@@ -1,11 +1,10 @@
-package com.ylinor.harvester.data.handlers;
+package com.onaple.harvester.data.handlers;
 
 import com.google.common.reflect.TypeToken;
-import com.ylinor.harvester.Harvester;
-import com.ylinor.harvester.data.beans.HarvestDropBean;
-import com.ylinor.harvester.data.beans.HarvestableBean;
-import com.ylinor.harvester.data.serializers.HarvestDropSerializer;
-import com.ylinor.harvester.data.serializers.HarvestableSerializer;
+import com.onaple.harvester.data.beans.HarvestableBean;
+import com.onaple.harvester.data.serializers.HarvestDropSerializer;
+import com.onaple.harvester.data.serializers.HarvestableSerializer;
+import com.onaple.harvester.data.beans.HarvestDropBean;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;

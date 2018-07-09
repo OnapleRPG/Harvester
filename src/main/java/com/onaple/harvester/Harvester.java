@@ -1,23 +1,30 @@
-package com.ylinor.harvester;
+package com.onaple.harvester;
 
 import javax.inject.Inject;
 
-import com.ylinor.harvester.data.dao.RespawningBlockDao;
-import com.ylinor.harvester.data.handlers.ConfigurationHandler;
-import com.ylinor.harvester.utils.SpawnUtil;
+import com.onaple.harvester.command.ReloadCommand;
+import com.onaple.harvester.data.dao.RespawningBlockDao;
+import com.onaple.harvester.data.handlers.ConfigurationHandler;
+import com.onaple.harvester.exception.PluginNotFoundException;
+import com.onaple.harvester.utils.SpawnUtil;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "harvester", name = "Harvester", version = "0.0.1")
@@ -25,7 +32,7 @@ public class Harvester {
 
 	@Inject
 	@ConfigDir(sharedRoot=true)
-    private Path configDir;
+	private Path configDir;
 
 	private static Logger logger;
 	@Inject
@@ -40,6 +47,13 @@ public class Harvester {
 
 	public static Harvester getHarvester() {
 		return harvester;
+	}
+
+	public PluginContainer getInstance() throws PluginNotFoundException {
+
+
+			return Sponge.getPluginManager().getPlugin("harvester").orElseThrow(() ->  new PluginNotFoundException("harvester"));
+
 	}
 
 	@Listener
@@ -69,7 +83,7 @@ public class Harvester {
 		CommandSpec reload = CommandSpec.builder()
 				.description(Text.of("Reaload Harvester configuration from files."))
 				.permission("harvester.admin")
-				.executor(new com.ylinor.harvester.command.ReloadCommand()).build();
+				.executor(new ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reload, "reload-harvester");
 
 
@@ -77,11 +91,36 @@ public class Harvester {
         logger.info("HARVESTER initialized.");
 	}
 	public int loadHarvestable() throws IOException, ObjectMappingException {
+		initDefaultConfig("harvestables.conf");
 		return ConfigurationHandler.readHarvestablesConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/harvestables.conf"));
 	}
 
 	public int loadDrops() throws IOException, ObjectMappingException {
+		initDefaultConfig("drops.conf");
 		return ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/drops.conf"));
 
+	}
+
+	public void initDefaultConfig(String path){
+		if (Files.notExists(Paths.get(configDir +"/harvester/" + path))) {
+			try {
+				PluginContainer pluginInstance = getInstance();
+				Optional<Asset> defaultConfigFile = pluginInstance.getAsset(path);
+				getLogger().info("No config file set for " + path + " default config will be loaded");
+				if (defaultConfigFile.isPresent()) {
+					try {
+						defaultConfigFile.get().copyToDirectory(Paths.get(configDir + "/harvester/"));
+					} catch (IOException e) {
+						getLogger().error("Error while setting default configuration : " + e.getMessage());
+					}
+				} else {
+					logger.warn("default config not found");
+				}
+
+			}
+			catch (PluginNotFoundException e){
+				getLogger().error(e.toString());
+			}
+		}
 	}
 }

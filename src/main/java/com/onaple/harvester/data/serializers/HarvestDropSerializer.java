@@ -1,23 +1,19 @@
-package com.ylinor.harvester.data.serializers;
+package com.onaple.harvester.data.serializers;
 
 import com.google.common.reflect.TypeToken;
-import com.ylinor.harvester.Harvester;
-import com.ylinor.harvester.data.beans.HarvestableBean;
+import com.onaple.harvester.data.beans.HarvestDropBean;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class HarvestableSerializer implements TypeSerializer<HarvestableBean> {
+public class HarvestDropSerializer implements TypeSerializer<HarvestDropBean> {
 
     @Override
-    public HarvestableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
-        String blocType = value.getNode("type").getString();
-        int respawnMin = value.getNode("respawnmin").getInt();
-        int respawnMax = value.getNode("respawnmax").getInt();
+    public HarvestDropBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
+        String blockType = value.getNode("type").getString();
         Map<String, String> states = new HashMap<>();
         Map<Object, ?> statesNode = value.getNode("state").getChildrenMap();
         for (Map.Entry<Object, ?> entry : statesNode.entrySet()) {
@@ -25,11 +21,14 @@ public class HarvestableSerializer implements TypeSerializer<HarvestableBean> {
                 states.put((String)entry.getKey(), ((ConfigurationNode) entry.getValue()).getNode("value").getString());
             }
         }
-        return new HarvestableBean(blocType, states, respawnMin, respawnMax);
+        String itemName = value.getNode("item_name").getString();
+        int itemRef = value.getNode("item_ref").getInt();
+        int poolRef = value.getNode("pool_ref").getInt();
+        return new HarvestDropBean(blockType, states, itemName, itemRef, poolRef);
     }
 
     @Override
-    public void serialize(TypeToken<?> type, HarvestableBean obj, ConfigurationNode value) throws ObjectMappingException {
+    public void serialize(TypeToken<?> type, HarvestDropBean obj, ConfigurationNode value) throws ObjectMappingException {
 
     }
 }
