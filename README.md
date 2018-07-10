@@ -1,3 +1,4 @@
+![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Harvester&metric=alert_status)
 # Harvester
 
 Harvester is a Sponge Minecraft plugin that restricts block break events for every non-creative players, 
