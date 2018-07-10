@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/OnapleRPG/Harvester.svg?branch=master)](https://travis-ci.org/OnapleRPG/Harvester)
 ![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Harvester&metric=alert_status)
 # Harvester
 
