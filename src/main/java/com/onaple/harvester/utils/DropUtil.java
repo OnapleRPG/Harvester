@@ -1,5 +1,6 @@
 package com.onaple.harvester.utils;
 
+import com.onaple.harvester.Harvester;
 import com.onaple.harvester.data.handlers.ConfigurationHandler;
 import com.onaple.harvester.data.beans.HarvestDropBean;
 import com.ylinor.itemizer.service.IItemService;
@@ -63,6 +64,7 @@ public class DropUtil {
                 }
             }
         } catch (NoClassDefFoundError e) {
+            Harvester.getLogger().error("Could not contact Itemizer plugin : " + e.getMessage());
         }
         if (harvestDropBean.getName() != null) {
             Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDropBean.getName());
