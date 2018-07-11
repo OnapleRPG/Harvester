@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 public class DatabaseHandler {
-    private static String JDBC_URL = "jdbc:h2:./harvester";
+    private static String JDBC_URL = "jdbc:sqlite:./harvester.db";
 
     private static SqlService sqlService;
 

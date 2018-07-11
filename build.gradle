@@ -32,6 +32,7 @@ repositories {
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
     compile 'org.spongepowered:spongeapi:7.0.0'
+    compile 'org.xerial:sqlite-jdbc:3.7.2'
     testCompile "junit:junit:4.11"
     implementation 'com.github.OnapleRPG:Itemizer:V0.1.1'
 }

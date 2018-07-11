@@ -27,10 +27,10 @@ public class SpawnUtil {
         int respawnMin = harvestable.getRespawnMin()*60;
         int respawnMax = harvestable.getRespawnMax()*60;
         int respawnDelay = random.nextInt((respawnMax - respawnMin)+1) + respawnMin;
-        Timestamp respawnDate = new Timestamp(Calendar.getInstance().getTime().getTime());
-        respawnDate.setTime(respawnDate.getTime()/1000 + respawnDelay);
+        Timestamp respawnDate = new Timestamp(new Date().getTime());
+        long respawnTime = respawnDate.getTime()/1000 + respawnDelay;
         RespawningBlockBean respawningBlock = new RespawningBlockBean(position.getX(), position.getY(), position.getZ(),
-                harvestable.getType(), BlockStateSerializer.serialize(harvestable.getStates()), (int)respawnDate.getTime());
+                harvestable.getType(), BlockStateSerializer.serialize(harvestable.getStates()), (int)respawnTime);
         RespawningBlockDao.addRespawningBlock(respawningBlock);
     }
 
