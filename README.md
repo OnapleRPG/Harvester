@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/OnapleRPG/Harvester.svg?branch=master)](https://travis-ci.org/OnapleRPG/Harvester)
-![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Harvester&metric=alert_status)
-# Harvester
+# Harvester  [![Build Status](https://travis-ci.org/OnapleRPG/Itemizer.svg?branch=master)](https://travis-ci.org/OnapleRPG/Itemizer) ![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Itemizer&metric=alert_status)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 
 Harvester is a Sponge Minecraft plugin that restricts block break events for every non-creative players, 
 according to the rules described in a configuration file.
