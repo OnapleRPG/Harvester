@@ -82,7 +82,7 @@ public class Harvester {
 
 		CommandSpec reload = CommandSpec.builder()
 				.description(Text.of("Reaload Harvester configuration from files."))
-				.permission("harvester.admin")
+				.permission("harvester.command.reload")
 				.executor(new ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reload, "reload-harvester");
 

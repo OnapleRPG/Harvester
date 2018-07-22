@@ -74,3 +74,7 @@ harvest_items = [
 _Following the above example, dirt and wood are going to drop their respective items, whereas diorite stone will drop a
 cobblestone block, the item number 2 of Itemizer, and an item from the first Itemizer pool. Note that we could have 
 writen only one or two of the three item fetchers._
+
+### Reload command
+There is a command that reloads the configuration files without needing to restart the server : **/reload-harvester**.  
+Permission : *harvester.command.reload*
