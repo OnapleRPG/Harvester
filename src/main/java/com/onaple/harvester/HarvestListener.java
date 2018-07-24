@@ -49,12 +49,11 @@ public class HarvestListener {
     }
 
     /**
-     * prevent wheat growing.
-     * @param event
+     * Prevent growing event
+     * @param event Event happening when stuff grows
      */
     @Listener
-    public void onBlockGrowEvent(ChangeBlockEvent.Modify event){
-       //event.getTransactions().stream().forEach(blockSnapshotTransaction ->  Harvester.getLogger().info(blockSnapshotTransaction.getDefault().toString()));
+    public void onBlockGrowEvent(ChangeBlockEvent.Modify.Grow event){
         event.setCancelled(true);
     }
 
