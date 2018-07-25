@@ -1,6 +1,5 @@
 language: java
 jdk:
-  - openjdk8
   - oraclejdk8
 
 services:
@@ -17,7 +16,7 @@ addons:
     organization: ylinor-github
 
 script:
-  - DISPLAY=:99 ./gradlew sonarqube --stacktrace --info
+  - DISPLAY=:99 ./gradlew sonarqube --stacktrace
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

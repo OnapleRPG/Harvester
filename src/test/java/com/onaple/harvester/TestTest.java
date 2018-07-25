@@ -1,5 +1,6 @@
 package com.onaple.harvester;
 
+import com.flowpowered.math.vector.Vector3d;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -28,7 +29,13 @@ public class TestTest extends BaseTest {
         expectedEx.expectMessage(CoreMatchers.containsString("Got message: One shot"));
 
         this.testUtils.listenOneShot(() -> {
-            this.testUtils.getClient().sendMessage("One shot");
+            this.testUtils.getClient().lookAt(new Vector3d(0, -1, 0));
+            this.testUtils.getClient().holdLeftClick(true);
+            try {
+                this.testUtils.getClient().wait(1000);
+            } catch (InterruptedException e) {
+                this.testUtils.getClient().sendMessage("One shot");
+            }
         }, new StandaloneEventListener<>(MessageChannelEvent.Chat.class, (MessageChannelEvent.Chat event) -> Assert.fail("Got message: " + event.getRawMessage().toPlain())));
     }
 
