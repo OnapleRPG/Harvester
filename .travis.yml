@@ -1,15 +1,20 @@
 language: java
 jdk:
   - oraclejdk8
+
 services:
   - docker
+
 before_install:
   - gradle wrapper
+  - chmod +x scripts/run-xvfb
   - scripts/run-xvfb
 install: true
+
 addons:
   sonarcloud:
     organization: ylinor-github
+
 script:
   - ./gradlew sonarqube
   - DISPLAY=:99 ./gradlew build --stacktrace --info
