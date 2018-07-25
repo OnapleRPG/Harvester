@@ -9,3 +9,6 @@ build/*
 !build/libs/Harvester.jar
 /build/libs/Harvester.jar
 build
+production
+logs
+.mixin.out
