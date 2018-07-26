@@ -1,6 +1,7 @@
 package com.onaple.harvester;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -9,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.event.message.MessageChannelEvent;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.mctester.api.junit.MinecraftRunner;
@@ -17,13 +17,15 @@ import org.spongepowered.mctester.internal.BaseTest;
 import org.spongepowered.mctester.internal.event.StandaloneEventListener;
 import org.spongepowered.mctester.junit.TestUtils;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @RunWith(MinecraftRunner.class)
-public class ReloadTest extends BaseTest {
+public class HarvesterTest extends BaseTest {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
-    public ReloadTest(TestUtils testUtils) {
+    public HarvesterTest(TestUtils testUtils) {
         super(testUtils);
     }
 
@@ -34,33 +36,43 @@ public class ReloadTest extends BaseTest {
     public void testReloadHarvester() throws Throwable {
         String harvestableReloadedString = "Harvestables configuration successfully reloaded";
         String dropsReloadedString = "Drops configuration successfully reloaded";
+        AtomicBoolean harvestableReloadedBool = new AtomicBoolean(false), dropsReloadedBool = new AtomicBoolean(false);
         this.testUtils.listenOneShot(() -> {
             this.testUtils.getClient().sendMessage("/reload-harvester");
         }, new StandaloneEventListener<>(MessageChannelEvent.class, (MessageChannelEvent event) -> {
-            Assert.assertTrue(event.getMessage().toPlain().contains(harvestableReloadedString)
-                              || event.getMessage().toPlain().contains(dropsReloadedString));
+            if (event.getMessage().toPlain().contains(harvestableReloadedString)) {
+                harvestableReloadedBool.set(true);
+            }
+            if (event.getMessage().toPlain().contains(dropsReloadedString)) {
+                dropsReloadedBool.set(true);
+            }
         }));
+        Assert.assertTrue(harvestableReloadedBool.get() && dropsReloadedBool.get());
     }
 
     /**
      * Mining protected block
      */
-    /*@Test
+    @Test
     public void testMineProtectedBlock() throws Throwable {
         this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.STONE, 1));
-        Vector3d blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, 5, 0));
+        Vector3d blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, -1, 0));
         this.testUtils.getClient().lookAt(blockPosition);
-        this.testUtils.getClient().rightClick();
+        /*this.testUtils.getClient().holdRightClick(true);
+        this.testUtils.sleepTicks(7);
+        this.testUtils.getClient().holdRightClick(false);
         this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIAMOND_PICKAXE, 1));
-        this.testUtils.getClient().selectHotbarSlot(1);
-        this.testUtils.sleepTicks(300);
-
-        this.testUtils.listenOneShot(() -> {
-            Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).ifPresent(world -> {
-                Assert.assertEquals(BlockTypes.STONE, world.getBlockType(blockPosition.toInt()));
+        this.testUtils.getClient().selectHotbarSlot(1);*/
+        this.testUtils.sleepTicks(200);
+        try {
+            this.testUtils.runOnMainThread(() -> {
+                Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).ifPresent(world -> {
+                    Assert.assertEquals(BlockTypes.GRASS, world.getBlockType(new Vector3i(0, 3, 0)));
+                });
             });
-        }, new StandaloneEventListener<>(MessageChannelEvent.class, (MessageChannelEvent event) -> {
-        }));
-    }*/
+        } catch (Throwable e) {
+            Assert.fail(e.getMessage());
+        }
+    }
 
 }
