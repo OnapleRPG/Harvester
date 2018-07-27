@@ -4,6 +4,7 @@
 gradlew
 gradlew.bat
 gradle.properties
+gradle
 build/*
 !build/libs
 !build/libs/Harvester.jar

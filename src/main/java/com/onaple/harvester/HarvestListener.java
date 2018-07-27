@@ -39,8 +39,8 @@ public class HarvestListener {
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
                     BlockSnapshot blockSnapshot = transaction.getOriginal();
-                    SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition());
-
+                    blockSnapshot.getLocation().ifPresent(location ->
+                            SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition(), location.getExtent().getName()));
                     return;
                 }
             }

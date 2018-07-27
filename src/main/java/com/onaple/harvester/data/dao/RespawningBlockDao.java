@@ -19,7 +19,7 @@ public class RespawningBlockDao {
      * Generate database tables if they do not exist
      */
     public static void createTableIfNotExist() {
-        String query = "CREATE TABLE IF NOT EXISTS respawning_block (id INTEGER PRIMARY KEY, x INT, y INT, z INT, block_type VARCHAR(50), serialized_block_states VARCHAR(200), respawn_time INT)";
+        String query = "CREATE TABLE IF NOT EXISTS respawning_block (id INTEGER PRIMARY KEY, x INT, y INT, z INT, block_type VARCHAR(50), serialized_block_states VARCHAR(200), world VARCHAR(200), respawn_time INT)";
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -41,7 +41,7 @@ public class RespawningBlockDao {
      * @return List of respawning blocks
      */
     public static List<RespawningBlockBean> getRespawningBlocks() {
-        String query = "SELECT id, x, y, z, block_type, serialized_block_states, respawn_time FROM respawning_block WHERE strftime('%s', 'now') > respawn_time";
+        String query = "SELECT id, x, y, z, block_type, serialized_block_states, world, respawn_time FROM respawning_block WHERE strftime('%s', 'now') > respawn_time";
         List<RespawningBlockBean> respawningBlocks = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
@@ -53,7 +53,7 @@ public class RespawningBlockDao {
             while (results.next()) {
                 respawningBlocks.add(new RespawningBlockBean(results.getInt("id"), results.getInt("x"),
                         results.getInt("y"), results.getInt("z"), results.getString("block_type"),
-                        results.getString("serialized_block_states"), results.getInt("respawn_time")));
+                        results.getString("serialized_block_states"), results.getString("world"), results.getInt("respawn_time")));
             }
             statement.close();
         } catch (ServiceUnavailableException e) {
@@ -71,7 +71,7 @@ public class RespawningBlockDao {
      * @param block Block to respawn later
      */
     public static void addRespawningBlock(RespawningBlockBean block) {
-        String query = "INSERT INTO respawning_block (x, y, z, block_type, serialized_block_states, respawn_time) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO respawning_block (x, y, z, block_type, serialized_block_states, world, respawn_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -82,7 +82,8 @@ public class RespawningBlockDao {
             statement.setInt(3, block.getZ());
             statement.setString(4, block.getBlockType());
             statement.setString(5, block.getSerializedBlockStates());
-            statement.setInt(6, block.getRespawnTime());
+            statement.setString(6, block.getWorld());
+            statement.setInt(7, block.getRespawnTime());
             statement.execute();
             statement.close();
         } catch (ServiceUnavailableException e) {

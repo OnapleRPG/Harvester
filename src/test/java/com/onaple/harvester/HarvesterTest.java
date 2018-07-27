@@ -57,7 +57,7 @@ public class HarvesterTest extends BaseTest {
     @Test
     public void testMineProtectedBlock() throws Throwable {
 
-        this.testUtils.listenOneShot(() -> {
+        /*this.testUtils.listenOneShot(() -> {
             this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.STONE, 1));
             Vector3d blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, -1, 0));
             this.testUtils.getClient().lookAt(blockPosition);
@@ -77,7 +77,7 @@ public class HarvesterTest extends BaseTest {
         }, new StandaloneEventListener<>(ChangeBlockEvent.Break.class, (ChangeBlockEvent.Break event) -> {
 
             })
-        );
+        );*/
 
     }
 
