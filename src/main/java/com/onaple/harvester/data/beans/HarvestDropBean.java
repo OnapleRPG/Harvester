@@ -11,11 +11,11 @@ public class HarvestDropBean {
     /** Name of the item to drop **/
     private String name;
     /** Reference of the item in Itemizer **/
-    private int itemRef;
+    private String itemRef;
     /** Reference of the pool in Itemizer **/
-    private int poolRef;
+    private String poolRef;
 
-    public HarvestDropBean(String blockType, Map<String, String> blockStates, String name, int itemRef, int poolRef) {
+    public HarvestDropBean(String blockType, Map<String, String> blockStates, String name, String itemRef, String poolRef) {
         this.blockType = blockType;
         this.blockStates = blockStates;
         this.name = name;
@@ -44,17 +44,17 @@ public class HarvestDropBean {
         this.name = name;
     }
 
-    public int getItemRef() {
+    public String getItemRef() {
         return itemRef;
     }
-    public void setItemRef(int itemRef) {
+    public void setItemRef(String itemRef) {
         this.itemRef = itemRef;
     }
 
-    public int getPoolRef() {
+    public String getPoolRef() {
         return poolRef;
     }
-    public void setPoolRef(int poolRef) {
+    public void setPoolRef(String poolRef) {
         this.poolRef = poolRef;
     }
 }

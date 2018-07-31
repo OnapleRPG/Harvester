@@ -13,14 +13,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.filter.cause.First;
-import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
@@ -144,12 +138,12 @@ public class Harvester {
 				getLogger().error(e.toString());
 			}
 		}
-	}
+	}/*
 
 	@Listener
 	public void onPlayerItemDrop(DropItemEvent.Dispense event, @First Player player) {
 	    if (!player.gameMode().get().equals(GameModes.CREATIVE)) {
             event.setCancelled(true);
         }
-	}
+	}*/
 }

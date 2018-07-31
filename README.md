@@ -40,7 +40,7 @@ Only the andesite variant of stone can be broken, and it will respawn between 5 
 
 ### Harvest drops
 
-A file named __*harvest_drops.conf*__ must exist into the _config_folder of the server.
+A file named __*drops.conf*__ must exist into the _config_folder of the server.
 It is used to define the items that will come out of the mined blocks.
 
 The file also uses HOCON and contains two arrays :  

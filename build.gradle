@@ -66,7 +66,7 @@ repositories {
 dependencies {
     implementation 'org.spongepowered:spongeapi:7.0.0'
     implementation 'org.xerial:sqlite-jdbc:3.7.2'
-    implementation 'com.github.OnapleRPG:Itemizer:V0.1.1'
+    implementation 'com.github.OnapleRPG:Itemizer:V1.1.0'
     testCompile "junit:junit:4.11"
     testCompile 'org.spongepowered:mctester:0.8.0-SNAPSHOT'
 }

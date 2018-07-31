@@ -3,7 +3,7 @@ package com.onaple.harvester.utils;
 import com.onaple.harvester.Harvester;
 import com.onaple.harvester.data.handlers.ConfigurationHandler;
 import com.onaple.harvester.data.beans.HarvestDropBean;
-import com.ylinor.itemizer.service.IItemService;
+import com.onaple.itemizer.service.IItemService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.trait.BlockTrait;
@@ -50,13 +50,13 @@ public class DropUtil {
             Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);
             if (optionalIItemService.isPresent()) {
                 IItemService iItemService = optionalIItemService.get();
-                if (harvestDropBean.getItemRef() > 0) {
+                if (harvestDropBean.getItemRef() != null) {
                     Optional<ItemStack> refItem = iItemService.retrieve(harvestDropBean.getItemRef());
                     if (refItem.isPresent()) {
                         return refItem.get();
                     }
                 }
-                if (harvestDropBean.getPoolRef() > 0) {
+                if (harvestDropBean.getPoolRef() != null) {
                     Optional<ItemStack> poolItem = iItemService.fetch(harvestDropBean.getPoolRef());
                     if (poolItem.isPresent()) {
                         return poolItem.get();
