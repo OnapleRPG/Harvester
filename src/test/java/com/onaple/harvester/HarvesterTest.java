@@ -111,7 +111,7 @@ public class HarvesterTest extends BaseTest {
             this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(false);
             this.testUtils.runOnMainThread(() -> {
-                Assert.assertEquals(BlockTypes.AIR, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
+                Assert.assertNotEquals(BlockTypes.DIRT, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
             });
         } catch (Throwable e) {
             throw new AssertionError(e);
