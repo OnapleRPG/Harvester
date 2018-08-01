@@ -9,6 +9,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.item.ItemTypes;
@@ -56,30 +58,29 @@ public class HarvesterTest extends BaseTest {
      */
     @Test
     public void testMineProtectedBlock() throws Throwable {
+        this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.STONE, 1));
+        this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIAMOND_PICKAXE, 1));
+        this.testUtils.waitForInventoryPropagation();
 
-        this.testUtils.listenOneShot(() -> {
-            this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.STONE, 1));
-            this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIAMOND_PICKAXE, 1));
-            this.testUtils.waitForInventoryPropagation();
+        Vector3i blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, -1, 0)).toInt();
+        this.testUtils.getClient().lookAtBlock(blockPosition);
+        this.testUtils.getClient().rightClick();
 
-            Vector3i blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, -1, 0)).toInt();
-            this.testUtils.getClient().lookAtBlock(blockPosition);
-            this.testUtils.getClient().rightClick();
-
-            this.testUtils.getClient().selectHotbarSlot(1);
-            try {
-                this.testUtils.runOnMainThread(() -> {
-                    Assert.assertEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
-                });
-                this.testUtils.getClient().leftClick();
-            } catch (Throwable e) {
-                throw new AssertionError(e);
-            }
-            this.testUtils.sleepTicks(200);
-        }, new StandaloneEventListener<>(ChangeBlockEvent.Break.class, (ChangeBlockEvent.Break event) -> {
-
-            })
-        );
+        this.testUtils.getClient().selectHotbarSlot(1);
+        try {
+            this.testUtils.runOnMainThread(() -> {
+                Assert.assertEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
+                testUtils.getThePlayer().offer(Keys.GAME_MODE, GameModes.SURVIVAL);
+            });
+            this.testUtils.getClient().holdLeftClick(true);
+            this.testUtils.sleepTicks(10);
+            this.testUtils.getClient().holdLeftClick(false);
+            this.testUtils.runOnMainThread(() -> {
+                Assert.assertNotEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
+            });
+        } catch (Throwable e) {
+            throw new AssertionError(e);
+        }
 
     }
 
