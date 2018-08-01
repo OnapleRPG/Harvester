@@ -58,7 +58,7 @@ public class HarvesterTest extends BaseTest {
      */
     @Test
     public void testMineProtectedBlock() throws Throwable {
-        this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.STONE, 64));
+        this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.STONE, 1));
         this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIAMOND_PICKAXE, 1));
         this.testUtils.waitForInventoryPropagation();
 
@@ -90,7 +90,8 @@ public class HarvesterTest extends BaseTest {
     @Test
     public void testMineAllowedBlock() throws Throwable {
         this.testUtils.getThePlayer().getInventory().clear();
-        this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIRT, 64));
+        this.testUtils.waitForInventoryPropagation();
+        this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIRT, 1));
         this.testUtils.getThePlayer().getInventory().offer(ItemStack.of(ItemTypes.DIAMOND_SHOVEL, 1));
         this.testUtils.waitForInventoryPropagation();
 
