@@ -19,7 +19,7 @@ buildscript {
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
         classpath 'gradle.plugin.org.spongepowered:spongegradle:0.8.1'
         classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
-        classpath 'org.spongepowered:mctester:0.8.0-SNAPSHOT'
+        classpath 'org.spongepowered:mctester:0.9.0-SNAPSHOT'
     }
 }
 
@@ -37,7 +37,6 @@ apply plugin: 'org.spongepowered.mctester'
 minecraft {
     forgeVersion = '1.12.2-14.23.4.2704'
     mappings = "snapshot_20171007"
-    coreMod = 'org.spongepowered.mod.SpongeCoremod'
 }
 
 sourceCompatibility = 1.8
@@ -64,11 +63,11 @@ repositories {
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 dependencies {
-    implementation 'org.spongepowered:spongeapi:7.0.0'
+    implementation 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
     implementation 'org.xerial:sqlite-jdbc:3.7.2'
     implementation 'com.github.OnapleRPG:Itemizer:V1.1.0'
     testCompile "junit:junit:4.11"
-    testCompile 'org.spongepowered:mctester:0.8.0-SNAPSHOT'
+    testCompile 'org.spongepowered:mctester:0.9.0-SNAPSHOT'
 }
 
 sonarqube {
