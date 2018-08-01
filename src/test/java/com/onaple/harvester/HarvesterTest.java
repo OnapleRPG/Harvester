@@ -98,6 +98,7 @@ public class HarvesterTest extends BaseTest {
         Vector3i blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(-2, -1, 0)).toInt();
         this.testUtils.getClient().lookAtBlock(blockPosition);
         this.testUtils.getClient().rightClick();
+        this.testUtils.sleepTicks(5);
 
         this.testUtils.getClient().selectHotbarSlot(1);
         try {
