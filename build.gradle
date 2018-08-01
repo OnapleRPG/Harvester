@@ -37,7 +37,6 @@ apply plugin: 'org.spongepowered.mctester'
 minecraft {
     forgeVersion = '1.12.2-14.23.4.2704'
     mappings = "snapshot_20171007"
-    coreMod = 'org.spongepowered.mod.SpongeCoremod'
 }
 
 sourceCompatibility = 1.8
