@@ -22,7 +22,7 @@ import org.spongepowered.mctester.junit.TestUtils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@RunWith(MinecraftRunner.class)
+//@RunWith(MinecraftRunner.class)
 public class HarvesterTest extends BaseTest {
 
     @Rule
