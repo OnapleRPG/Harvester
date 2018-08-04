@@ -35,7 +35,7 @@ public class HarvesterTest extends BaseTest {
     /**
      * Command /reload-harvester should returns confirmation messages
      */
-    /*
+    @Test
     public void testReloadHarvester() throws Throwable {
         String harvestableReloadedString = "Harvestables configuration successfully reloaded";
         String dropsReloadedString = "Drops configuration successfully reloaded";
@@ -51,7 +51,7 @@ public class HarvesterTest extends BaseTest {
             }
         }));
         Assert.assertTrue(harvestableReloadedBool.get() && dropsReloadedBool.get());
-    }*/
+    }
 
     /**
      * Mining protected block
