@@ -73,6 +73,7 @@ public class HarvesterTest extends BaseTest {
                 Assert.assertEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
                 testUtils.getThePlayer().offer(Keys.GAME_MODE, GameModes.SURVIVAL);
             });
+            this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(true);
             this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(false);
@@ -107,6 +108,7 @@ public class HarvesterTest extends BaseTest {
                 Assert.assertEquals(BlockTypes.DIRT, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
                 testUtils.getThePlayer().offer(Keys.GAME_MODE, GameModes.SURVIVAL);
             });
+            this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(true);
             this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(false);
