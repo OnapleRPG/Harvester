@@ -63,7 +63,7 @@ public class HarvesterTest extends BaseTest {
         this.testUtils.waitForInventoryPropagation();
 
         this.testUtils.getClient().selectHotbarSlot(0);
-        Vector3i blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, -1, 0)).toInt();
+        Vector3i blockPosition = this.testUtils.runOnMainThread(() -> this.testUtils.getThePlayer().getPosition().add(new Vector3d(2, -1, 0)).toInt());
         this.testUtils.getClient().lookAtBlock(blockPosition);
         this.testUtils.getClient().rightClick();
 
@@ -73,9 +73,9 @@ public class HarvesterTest extends BaseTest {
                 Assert.assertEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
                 testUtils.getThePlayer().offer(Keys.GAME_MODE, GameModes.SURVIVAL);
             });
-            this.testUtils.sleepTicks(10);
+            this.testUtils.waitForAll();
             this.testUtils.getClient().holdLeftClick(true);
-            this.testUtils.sleepTicks(10);
+            this.testUtils.getClient().sleepTicksClient(10);
             this.testUtils.getClient().holdLeftClick(false);
             this.testUtils.runOnMainThread(() -> {
                 Assert.assertEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
@@ -97,7 +97,7 @@ public class HarvesterTest extends BaseTest {
         this.testUtils.waitForInventoryPropagation();
 
         this.testUtils.getClient().selectHotbarSlot(0);
-        Vector3i blockPosition = this.testUtils.getThePlayer().getPosition().add(new Vector3d(-2, -1, 0)).toInt();
+        Vector3i blockPosition = this.testUtils.runOnMainThread(() -> this.testUtils.getThePlayer().getPosition().add(new Vector3d(-2, -1, 0)).toInt());
         this.testUtils.getClient().lookAtBlock(blockPosition);
         this.testUtils.getClient().rightClick();
         this.testUtils.sleepTicks(5);
@@ -108,9 +108,9 @@ public class HarvesterTest extends BaseTest {
                 Assert.assertEquals(BlockTypes.DIRT, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
                 testUtils.getThePlayer().offer(Keys.GAME_MODE, GameModes.SURVIVAL);
             });
-            this.testUtils.sleepTicks(10);
+            this.testUtils.waitForAll();
             this.testUtils.getClient().holdLeftClick(true);
-            this.testUtils.sleepTicks(10);
+            this.testUtils.getClient().sleepTicksClient(10);
             this.testUtils.getClient().holdLeftClick(false);
             this.testUtils.runOnMainThread(() -> {
                 Assert.assertNotEquals(BlockTypes.DIRT, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
