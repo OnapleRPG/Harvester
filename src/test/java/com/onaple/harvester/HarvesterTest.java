@@ -76,6 +76,7 @@ public class HarvesterTest extends BaseTest {
             this.testUtils.waitForAll();
             this.testUtils.getClient().holdLeftClick(true);
             this.testUtils.getClient().sleepTicksClient(10);
+            this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(false);
             this.testUtils.runOnMainThread(() -> {
                 Assert.assertEquals(BlockTypes.STONE, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
@@ -111,6 +112,7 @@ public class HarvesterTest extends BaseTest {
             this.testUtils.waitForAll();
             this.testUtils.getClient().holdLeftClick(true);
             this.testUtils.getClient().sleepTicksClient(10);
+            this.testUtils.sleepTicks(10);
             this.testUtils.getClient().holdLeftClick(false);
             this.testUtils.runOnMainThread(() -> {
                 Assert.assertNotEquals(BlockTypes.DIRT, testUtils.getThePlayer().getWorld().getBlockType(blockPosition.toInt().add(0, 1, 0)));
