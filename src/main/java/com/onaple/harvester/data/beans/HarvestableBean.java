@@ -11,12 +11,23 @@ public class HarvestableBean {
     private int respawnMin;
     /** Maximum time before resource respawn **/
     private int respawnMax;
+    /** Type of tool**/
+    private String toolType;
 
     public HarvestableBean(String type, Map<String, String> states, int respawnMin, int respawnMax) {
         this.type = type;
         this.states = states;
         this.respawnMin = respawnMin;
         this.respawnMax = respawnMax;
+        this.toolType = "hand";
+    }
+
+    public HarvestableBean(String type, Map<String, String> states, int respawnMin, int respawnMax, String toolType) {
+        this.type = type;
+        this.states = states;
+        this.respawnMin = respawnMin;
+        this.respawnMax = respawnMax;
+        this.toolType = toolType;
     }
 
     public String getType() {

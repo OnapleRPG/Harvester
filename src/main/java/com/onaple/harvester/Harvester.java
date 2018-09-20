@@ -7,6 +7,7 @@ import com.onaple.harvester.data.dao.RespawningBlockDao;
 import com.onaple.harvester.data.handlers.ConfigurationHandler;
 import com.onaple.harvester.exception.PluginNotFoundException;
 import com.onaple.harvester.utils.SpawnUtil;
+import com.ylinor.itemizer.service.IItemService;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -27,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "harvester", name = "Harvester", version = "0.0.1")
+@Plugin(id = "harvester", name = "Harvester", version = "1.0.0")
 public class Harvester {
 
 	@Inject
@@ -56,9 +57,26 @@ public class Harvester {
 
 	}
 
+	private static Optional<IItemService> itemService;
+	public static Optional<IItemService> getItemService(){ return itemService;}
+
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {
+
+		if(Sponge.getPluginManager().getPlugin("Itemizer").isPresent()) {
+			Optional itemServiceOptional = Sponge.getServiceManager().provide(IItemService.class);
+			if (itemServiceOptional.isPresent()) {
+				itemService = itemServiceOptional;
+			} else {
+				itemService = Optional.empty();
+				logger.warn("Itemizer dependency not found");
+			}
+		} else {
+			itemService = Optional.empty();
+			logger.warn("Itemizer dependency not found");
+		}
 		harvester = this;
+		Sponge.getEventManager().registerListeners(this, new HarvestListener());
 		RespawningBlockDao.createTableIfNotExist();
 		try {
 			logger.info("Number of Block in configuration : " + loadHarvestable());
@@ -75,7 +93,7 @@ public class Harvester {
 		} catch (ObjectMappingException e) {
 			logger.error("ObjectMappingException : ".concat(e.getMessage()));
 		}
-		Sponge.getEventManager().registerListeners(this, new HarvestListener());
+
         Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
                 .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);

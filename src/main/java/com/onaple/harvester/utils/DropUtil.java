@@ -45,9 +45,16 @@ public class DropUtil {
      * @param harvestDropBean
      * @return the matching itemStack by id,pool or name
      */
-    public static ItemStack getConfiguredDrop(HarvestDropBean harvestDropBean) {
+    public static ItemStack getConfiguredDrop(HarvestDropBean harvestDropBean,int levelType) {
+        if (harvestDropBean.getName() != null) {
+            Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDropBean.getName());
+            if (optionalType.isPresent()) {
+                return ItemStack.builder().itemType(optionalType.get()).build();
+
+            }
+        }
         try {
-            Optional<IItemService> optionalIItemService = Sponge.getServiceManager().provide(IItemService.class);
+            Optional<IItemService> optionalIItemService = Harvester.getItemService();
             if (optionalIItemService.isPresent()) {
                 IItemService iItemService = optionalIItemService.get();
                 if (harvestDropBean.getItemRef() > 0) {
@@ -65,13 +72,6 @@ public class DropUtil {
             }
         } catch (NoClassDefFoundError e) {
             Harvester.getLogger().error("Could not contact Itemizer plugin : " + e.getMessage());
-        }
-        if (harvestDropBean.getName() != null) {
-            Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDropBean.getName());
-            if (optionalType.isPresent()) {
-                return ItemStack.builder().itemType(optionalType.get()).build();
-
-            }
         }
         return null;
     }
