@@ -46,7 +46,8 @@ public class HarvestListener {
                     Optional<ItemStack> optitemStack =player.getItemInHand(HandTypes.MAIN_HAND);
                     if(optitemStack.isPresent()){
                        String type = getToolType(optitemStack.get());
-                       if (!type.equals(harvestable.getType())) {
+                      // player.sendMessage(Text.of("player tool type = "+ type + "| block tool type" + harvestable.getToolType()));
+                       if (!type.equals(harvestable.getToolType())) {
                          event.setCancelled(true);
                        }
                     }
@@ -74,30 +75,44 @@ public class HarvestListener {
 
 
     @Listener
-    public void onDropItemEvent(DropItemEvent.Destruct event, @First Player player ){
+    public void onDropItemEvent(DropItemEvent.Destruct event){
+        Harvester.getLogger().info(event.getClass().getName());
+        Optional<Player> optionalPlayerCause = event.getCause().first(Player.class);
         Object source = event.getSource();
         Harvester.getLogger().info(source.toString());
-        if (source instanceof BlockSnapshot) {
-            BlockSnapshot blockSnapshot = (BlockSnapshot) source;
+        if(optionalPlayerCause.isPresent()) {
+            Player player = optionalPlayerCause.get();
 
-            Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState());
-            if (optionalHarvestable.isPresent()) {
-                event.getEntities().clear();
-                HarvestDropBean harvestable = optionalHarvestable.get();
-                Optional<ItemStack> itemStackOptional = player.getItemInHand(HandTypes.MAIN_HAND);
-                ItemStack itemStack = null;
-                if(itemStackOptional.isPresent()) {
-                     itemStack = DropUtil.getConfiguredDrop(harvestable,getToolLevel(itemStackOptional.get()));
-                } else {
-                     itemStack = DropUtil.getConfiguredDrop(harvestable,0);
-                }
-                event.getEntities().add(DropUtil.getItemStackEntity(player.getLocation(),itemStack));
+            if (source instanceof BlockSnapshot) {
+                BlockSnapshot blockSnapshot = (BlockSnapshot) source;
+
+                 Optional<ItemStack> toolOptional =  player.getItemInHand(HandTypes.MAIN_HAND);
+                int toolLevel = 0;
+            if (toolOptional.isPresent()){
+                toolLevel = getToolLevel(toolOptional.get());
+            }
+                Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState(), toolLevel);
+                if (optionalHarvestable.isPresent()) {
+                    event.getEntities().clear();
+                    HarvestDropBean harvestable = optionalHarvestable.get();
+
+
+                    Optional<ItemStack> dropOptional = DropUtil.getConfiguredDrop(harvestable);
+                    if(dropOptional.isPresent()){
+                        event.getEntities().add(DropUtil.getItemStackEntity(player.getLocation(), dropOptional.get()));
+                    } else {
+                        Harvester.getLogger().warn("item not found");
+                    }
+
                 }
 
             } else {
                 List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
-                event.filterEntities(entity -> ! defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
+                event.filterEntities(entity -> !defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
             }
+        } else {
+            Harvester.getLogger().info("no player present");
+        }
     }
 
    /**

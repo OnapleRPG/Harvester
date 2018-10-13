@@ -14,6 +14,10 @@ public class HarvestableSerializer implements TypeSerializer<HarvestableBean> {
     @Override
     public HarvestableBean deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
         String blocType = value.getNode("type").getString();
+        String toolType = value.getNode("toolType").getString();
+        if(toolType == null){
+            toolType = "hand";
+        }
         int respawnMin = value.getNode("respawnmin").getInt();
         int respawnMax = value.getNode("respawnmax").getInt();
         Map<String, String> states = new HashMap<>();
@@ -23,7 +27,7 @@ public class HarvestableSerializer implements TypeSerializer<HarvestableBean> {
                 states.put((String)entry.getKey(), ((ConfigurationNode) entry.getValue()).getNode("value").getString());
             }
         }
-        return new HarvestableBean(blocType, states, respawnMin, respawnMax);
+        return new HarvestableBean(blocType, states, respawnMin, respawnMax,toolType);
     }
 
     @Override

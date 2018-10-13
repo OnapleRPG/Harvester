@@ -7,7 +7,7 @@ import com.onaple.harvester.data.dao.RespawningBlockDao;
 import com.onaple.harvester.data.handlers.ConfigurationHandler;
 import com.onaple.harvester.exception.PluginNotFoundException;
 import com.onaple.harvester.utils.SpawnUtil;
-import com.ylinor.itemizer.service.IItemService;
+import com.onaple.itemizer.service.IItemService;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -63,7 +63,7 @@ public class Harvester {
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {
 
-		if(Sponge.getPluginManager().getPlugin("Itemizer").isPresent()) {
+		if(Sponge.getPluginManager().getPlugin("itemizer").isPresent()) {
 			Optional itemServiceOptional = Sponge.getServiceManager().provide(IItemService.class);
 			if (itemServiceOptional.isPresent()) {
 				itemService = itemServiceOptional;

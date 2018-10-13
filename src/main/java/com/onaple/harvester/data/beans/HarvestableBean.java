@@ -57,4 +57,13 @@ public class HarvestableBean {
     public void setRespawnMax(int respawnMax) {
         this.respawnMax = respawnMax;
     }
+
+    public String getToolType() {
+        return toolType;
+    }
+
+    public void setToolType(String toolType) {
+        this.toolType = toolType;
+    }
+
 }
