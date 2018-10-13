@@ -24,9 +24,11 @@ public class HarvestDropSerializer implements TypeSerializer<HarvestDropBean> {
         String itemName = value.getNode("item_name").getString();
         String itemRef = value.getNode("item_ref").getString();
         String poolRef = value.getNode("pool_ref").getString();
+
         int toolLevel = value.getNode("toolLevel").getInt();
 
         return new HarvestDropBean(blockType, toolLevel, states, itemName, itemRef, poolRef);
+
     }
 
     @Override

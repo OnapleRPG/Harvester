@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/OnapleRPG/Harvester.svg?branch=master)](https://travis-ci.org/OnapleRPG/Harvester)
-![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Harvester&metric=alert_status)
-# Harvester
+# Harvester  [![Build Status](https://travis-ci.org/OnapleRPG/Harvester.svg?branch=master)](https://travis-ci.org/OnapleRPG/Harvester) ![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Harvester&metric=alert_status)   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 
 Harvester is a Sponge Minecraft plugin that restricts block break events for every non-creative players, 
 according to the rules described in a configuration file.
@@ -41,7 +40,7 @@ Only the andesite variant of stone can be broken, and it will respawn between 5 
 
 ### Harvest drops
 
-A file named __*harvest_drops.conf*__ must exist into the _config_folder of the server.
+A file named __*drops.conf*__ must exist into the _config_folder of the server.
 It is used to define the items that will come out of the mined blocks.
 
 The file also uses HOCON and contains two arrays :  
@@ -75,3 +74,7 @@ harvest_items = [
 _Following the above example, dirt and wood are going to drop their respective items, whereas diorite stone will drop a
 cobblestone block, the item number 2 of Itemizer, and an item from the first Itemizer pool. Note that we could have 
 writen only one or two of the three item fetchers._
+
+### Reload command
+There is a command that reloads the configuration files without needing to restart the server : **/reload-harvester**.  
+Permission : *harvester.command.reload*

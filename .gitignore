@@ -4,8 +4,12 @@
 gradlew
 gradlew.bat
 gradle.properties
+gradle
 build/*
 !build/libs
 !build/libs/Harvester.jar
 /build/libs/Harvester.jar
 build
+production
+logs
+.mixin.out

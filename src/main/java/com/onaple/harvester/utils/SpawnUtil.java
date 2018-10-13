@@ -22,7 +22,7 @@ public class SpawnUtil {
      * Register a mined block in database so it can be respawn later
      * @param harvestable Block to respawn later
      */
-    public static void registerRespawningBlock(HarvestableBean harvestable, Vector3i position) {
+    public static void registerRespawningBlock(HarvestableBean harvestable, Vector3i position, String world) {
         Random random = new Random();
         int respawnMin = harvestable.getRespawnMin()*60;
         int respawnMax = harvestable.getRespawnMax()*60;
@@ -30,7 +30,7 @@ public class SpawnUtil {
         Timestamp respawnDate = new Timestamp(new Date().getTime());
         long respawnTime = respawnDate.getTime()/1000 + respawnDelay;
         RespawningBlockBean respawningBlock = new RespawningBlockBean(position.getX(), position.getY(), position.getZ(),
-                harvestable.getType(), BlockStateSerializer.serialize(harvestable.getStates()), (int)respawnTime);
+                harvestable.getType(), BlockStateSerializer.serialize(harvestable.getStates()), world, (int)respawnTime);
         RespawningBlockDao.addRespawningBlock(respawningBlock);
     }
 
@@ -38,24 +38,23 @@ public class SpawnUtil {
      * Check if resources need to be respawn and do it if necessary
      */
     public static void checkBlockRespawn() {
-        Optional<World> optionalWorld = Sponge.getServer().getWorld("world");
-        if (!optionalWorld.isPresent()) {
-            return;
-        }
-        World world = optionalWorld.get();
+        List<RespawningBlockBean> blocksToDelete = new ArrayList<>();
         List<RespawningBlockBean> respawningBlocks = RespawningBlockDao.getRespawningBlocks();
         if (!respawningBlocks.isEmpty()) {
             Harvester.getLogger().info("Respawning resources : " + respawningBlocks.size() + " resources.");
         }
         for (RespawningBlockBean block: respawningBlocks) {
-            Location<World> location = new Location<>(world, block.getX(), block.getY(), block.getZ());
-            Optional<BlockType> replacingType = Sponge.getRegistry().getType(BlockType.class, block.getBlockType());
-            if (replacingType.isPresent()) {
-                Map<String, String> state = BlockStateSerializer.deserialize(block.getSerializedBlockStates());
-                location.setBlock(addTraits(replacingType.get(), state));
-            }
+            Sponge.getServer().getWorld(block.getWorld()).ifPresent(world -> {
+                Location<World> location = new Location<>(world, block.getX(), block.getY(), block.getZ());
+                Optional<BlockType> replacingType = Sponge.getRegistry().getType(BlockType.class, block.getBlockType());
+                if (replacingType.isPresent()) {
+                    Map<String, String> state = BlockStateSerializer.deserialize(block.getSerializedBlockStates());
+                    location.setBlock(addTraits(replacingType.get(), state));
+                    blocksToDelete.add(block);
+                }
+            });
         }
-        RespawningBlockDao.removeRespawningBlocks(respawningBlocks);
+        RespawningBlockDao.removeRespawningBlocks(blocksToDelete);
     }
 
     /**

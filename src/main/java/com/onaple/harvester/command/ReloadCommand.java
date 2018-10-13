@@ -19,7 +19,7 @@ public class ReloadCommand implements CommandExecutor{
         try {
             Harvester.getHarvester().loadHarvestable();
             src.sendMessage(Text.builder()
-                    .append(Text.builder("Harvestables configuration successfully reloaded.. ").color(TextColors.GREEN).build())
+                    .append(Text.builder("Harvestables configuration successfully reloaded.").color(TextColors.GREEN).build())
                     .build());
         } catch (IOException e) {
             writeError(src,e);
@@ -29,7 +29,7 @@ public class ReloadCommand implements CommandExecutor{
         try {
             Harvester.getHarvester().loadDrops();
             src.sendMessage(Text.builder()
-                    .append(Text.builder("Drops configuration successfully reloaded.. ").color(TextColors.GREEN).build())
+                    .append(Text.builder("Drops configuration successfully reloaded.").color(TextColors.GREEN).build())
                     .build());
         } catch (IOException e) {
             writeError(src,e);

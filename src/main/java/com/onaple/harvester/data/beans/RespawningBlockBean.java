@@ -13,24 +13,28 @@ public class RespawningBlockBean {
     private String block_type;
     /** States to apply to block **/
     private String serializedBlockStates;
+    /** World within which the block has to respawn **/
+    private String world;
     /** Timestamp when block must respawn **/
     private int respawnTime;
 
-    public RespawningBlockBean(int x, int y, int z, String block_type, String serializedBlockStates, int respawnTime) {
+    public RespawningBlockBean(int x, int y, int z, String block_type, String serializedBlockStates, String world, int respawnTime) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.block_type = block_type;
         this.serializedBlockStates = serializedBlockStates;
+        this.world = world;
         this.respawnTime = respawnTime;
     }
-    public RespawningBlockBean(int id, int x, int y, int z, String block_type, String serializedBlockStates, int respawnTime) {
+    public RespawningBlockBean(int id, int x, int y, int z, String block_type, String serializedBlockStates, String world, int respawnTime) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.z = z;
         this.block_type = block_type;
         this.serializedBlockStates = serializedBlockStates;
+        this.world = world;
         this.respawnTime = respawnTime;
     }
 
@@ -74,6 +78,13 @@ public class RespawningBlockBean {
     }
     public void setSerializedBlockStates(String serialized_block_states) {
         this.serializedBlockStates = serialized_block_states;
+    }
+
+    public String getWorld() {
+        return world;
+    }
+    public void setWorld(String world) {
+        this.world = world;
     }
 
     public int getRespawnTime() {
