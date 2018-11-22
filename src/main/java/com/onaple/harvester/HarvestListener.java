@@ -12,6 +12,7 @@ import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
@@ -31,18 +32,21 @@ public class HarvestListener {
     @Listener
     public void onBlockBreak(ChangeBlockEvent.Break event , @First Player player) {
 
+        if(player.gameMode() == GameModes.CREATIVE || player.hasPermission("harvester.block.breaking")){
+            return;
+        }
             for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
                     Optional<ItemStack> optitemStack =player.getItemInHand(HandTypes.MAIN_HAND);
-                    if(optitemStack.isPresent()){
+                    /*if(optitemStack.isPresent()){
                        String type = getToolType(optitemStack.get());
                       // player.sendMessage(Text.of("player tool type = "+ type + "| block tool type" + harvestable.getToolType()));
                        if (!type.equals(harvestable.getToolType())) {
                          event.setCancelled(true);
                        }
-                    }
+                    }*/
                     BlockSnapshot blockSnapshot = transaction.getOriginal();
                     blockSnapshot.getLocation().ifPresent(location ->
                             SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition(), location.getExtent().getName()));
