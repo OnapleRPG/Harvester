@@ -3,13 +3,14 @@
 
 Harvester is a Sponge Minecraft plugin that restricts block break events for every non-creative players, 
 according to the rules described in a configuration file.
+## Permission
+you can active harvester on sevral player with a permission. People who have : `harvester.block.breaking` will be able to freely break any blocks. People in creative Mode can break any blocks too.
 
 ## Configuration file
 
 ### Global configuration
 
 You can set worlds where you want that Harvester is enabled in the global.conf.
-
 ```
 Worlds = ["worldName1","WorldName2"]
 ``` 
