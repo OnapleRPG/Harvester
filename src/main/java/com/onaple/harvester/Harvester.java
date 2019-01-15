@@ -16,6 +16,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
@@ -28,7 +29,11 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "harvester", name = "Harvester", version = "1.0.0")
+@Plugin(id = "harvester", name = "Harvester", version = "1.1.1",
+		description = "resource block management and drop customization",
+		authors = {"zessirb","raiponz"},
+		dependencies = {@Dependency(id = "itemizer", optional = true)}
+)
 public class Harvester {
 
 	@Inject
@@ -50,11 +55,12 @@ public class Harvester {
 		return harvester;
 	}
 
+	private static GlobalConfiguration globalConfiguration;
+
+	public static GlobalConfiguration getGlobalConfiguration(){return globalConfiguration;}
+
 	public PluginContainer getInstance() throws PluginNotFoundException {
-
-
 			return Sponge.getPluginManager().getPlugin("harvester").orElseThrow(() ->  new PluginNotFoundException("harvester"));
-
 	}
 
 	private static Optional<IItemService> itemService;
@@ -78,6 +84,8 @@ public class Harvester {
 		harvester = this;
 		Sponge.getEventManager().registerListeners(this, new HarvestListener());
 		RespawningBlockDao.createTableIfNotExist();
+
+		/** load block configuration*/
 		try {
 			logger.info("Number of Block in configuration : " + loadHarvestable());
 		} catch (IOException e) {
@@ -85,6 +93,8 @@ public class Harvester {
 		} catch (ObjectMappingException e) {
 			logger.error("ObjectMappingException : ".concat(e.getMessage()));
 		}
+
+		/** load drops configuration */
 		try {
 			logger.info("Number of drops in configuration : " + loadDrops());
 
@@ -93,8 +103,17 @@ public class Harvester {
 		} catch (ObjectMappingException e) {
 			logger.error("ObjectMappingException : ".concat(e.getMessage()));
 		}
+		/** load Global configuration */
+		try {
+			logger.info("Load global configuration");
+			loadGlobal();
+			globalConfiguration.getWorldNames().forEach(s -> logger.info(s));
+		} catch (IOException | ObjectMappingException e) {
+			logger.error(e.getClass().getName() + " : ".concat(e.getMessage()));
+		}
 
-        Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
+
+		Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
                 .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);
 
@@ -128,7 +147,11 @@ public class Harvester {
 	public int loadDrops() throws IOException, ObjectMappingException {
 		initDefaultConfig("drops.conf");
 		return ConfigurationHandler.readHarvestDropsConfiguration(ConfigurationHandler.loadConfiguration(configDir+"/harvester/drops.conf"));
-
+	}
+	public void loadGlobal() throws IOException, ObjectMappingException {
+		initDefaultConfig("global.conf");
+		Harvester.globalConfiguration = ConfigurationHandler.readGlobalConfiguration(
+				ConfigurationHandler.loadConfiguration(configDir+"/harvester/global.conf"));
 	}
 
 	/**
@@ -156,12 +179,5 @@ public class Harvester {
 				getLogger().error(e.toString());
 			}
 		}
-	}/*
-
-	@Listener
-	public void onPlayerItemDrop(DropItemEvent.Dispense event, @First Player player) {
-	    if (!player.gameMode().get().equals(GameModes.CREATIVE)) {
-            event.setCancelled(true);
-        }
-	}*/
+	}
 }

@@ -19,17 +19,22 @@ public class ReloadCommand implements CommandExecutor{
         try {
             int harvestable = Harvester.getHarvester().loadHarvestable();
             src.sendMessage(writeSucces("Harvestable",harvestable));
-        } catch (IOException e) {
-            writeError(src,e);
-        } catch (ObjectMappingException e) {
+        } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
         }
         try {
             int drops = Harvester.getHarvester().loadDrops();
             src.sendMessage(writeSucces("drops.conf", drops));
-        } catch (IOException e) {
+        } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
-        } catch (ObjectMappingException e) {
+        }
+        /** load Global configuration */
+        try {
+            src.sendMessage(Text.builder("Load global configuration").color(TextColors.GREEN).build());
+            Harvester.getHarvester().loadGlobal();
+            Harvester.getGlobalConfiguration().getWorldNames().forEach(
+                    s -> src.sendMessage(Text.builder(s).color(TextColors.GOLD).build()));
+        } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
         }
         return CommandResult.success();

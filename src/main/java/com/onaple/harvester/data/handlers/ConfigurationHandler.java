@@ -1,6 +1,7 @@
 package com.onaple.harvester.data.handlers;
 
 import com.google.common.reflect.TypeToken;
+import com.onaple.harvester.GlobalConfiguration;
 import com.onaple.harvester.data.beans.HarvestableBean;
 import com.onaple.harvester.data.serializers.HarvestDropSerializer;
 import com.onaple.harvester.data.serializers.HarvestableSerializer;
@@ -47,6 +48,10 @@ public class ConfigurationHandler {
       /*  } catch (ObjectMappingException e) {
             Harvester.getLogger().error("Error while reading configuration 'harvestables' : " + e.getMessage());
         }*/
+    }
+    public static GlobalConfiguration readGlobalConfiguration(CommentedConfigurationNode configurationNode) throws ObjectMappingException {
+        List<String> worldnames = configurationNode.getNode("worlds").getList(TypeToken.of(String.class));
+        return new GlobalConfiguration(worldnames);
     }
 
     /**

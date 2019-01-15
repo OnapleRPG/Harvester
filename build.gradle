@@ -45,8 +45,8 @@ apply plugin: 'eu.davidea.grabver'
 versioning {
     // required (number)
     major = 1
-    minor = 0
-    patch = 0
+    minor = 1
+    patch = 1
 
 }
 
