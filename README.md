@@ -6,6 +6,14 @@ according to the rules described in a configuration file.
 
 ## Configuration file
 
+### Global configuration
+
+You can set worlds where you want that Harvester is enabled in the global.conf.
+
+```
+Worlds = ["worldName1","WorldName2"]
+``` 
+
 ### Harvest regeneration
 
 A file named __*harvestables.conf*__ needs to be created into the _config_ folder of the server.
