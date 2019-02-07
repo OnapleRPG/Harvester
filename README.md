@@ -10,7 +10,7 @@ you can active harvester on sevral player with a permission. People who have : `
 
 ### Global configuration
 
-You can set worlds where you want that Harvester is enabled in the global.conf.
+You can set worlds where you want that Harvester is enabled in the global.conf. Be careful world name are case sensitive. 
 ```
 Worlds = ["worldName1","WorldName2"]
 ``` 
