@@ -5,9 +5,14 @@ import java.util.List;
 
 public class GlobalConfiguration {
     private List<String> worldNames;
+    private String blockBreakCommand;
 
-    public GlobalConfiguration(List<String> worldNames) {
+
+
+    public GlobalConfiguration(List<String> worldNames,String blockBreakCommand)
+    {
         this.worldNames = worldNames;
+        this.blockBreakCommand = blockBreakCommand;
     }
 
     public boolean addWorldName(String newWorldName){
@@ -21,4 +26,5 @@ public class GlobalConfiguration {
     public List<String> getWorldNames() {
         return worldNames;
     }
+    public String getBlockBreakCommand() { return blockBreakCommand; }
 }

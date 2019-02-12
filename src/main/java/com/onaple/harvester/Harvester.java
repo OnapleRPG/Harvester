@@ -108,6 +108,7 @@ public class Harvester {
 			logger.info("Load global configuration");
 			loadGlobal();
 			globalConfiguration.getWorldNames().forEach(s -> logger.info(s));
+			logger.info("command run when block break : {}",globalConfiguration.getBlockBreakCommand());
 		} catch (IOException | ObjectMappingException e) {
 			logger.error(e.getClass().getName() + " : ".concat(e.getMessage()));
 		}

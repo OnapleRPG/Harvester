@@ -5,6 +5,7 @@ import com.onaple.harvester.data.handlers.ConfigurationHandler;
 import com.onaple.harvester.data.beans.HarvestDropBean;
 import com.onaple.harvester.utils.DropUtil;
 import com.onaple.harvester.utils.SpawnUtil;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.DataQuery;
@@ -41,7 +42,7 @@ public class HarvestListener {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
-                    Optional<ItemStack> optitemStack =player.getItemInHand(HandTypes.MAIN_HAND);
+                   /* Optional<ItemStack> optitemStack =player.getItemInHand(HandTypes.MAIN_HAND);
                     /*if(optitemStack.isPresent()){
                        String type = getToolType(optitemStack.get());
                       // player.sendMessage(Text.of("player tool type = "+ type + "| block tool type" + harvestable.getToolType()));
@@ -52,6 +53,7 @@ public class HarvestListener {
                     BlockSnapshot blockSnapshot = transaction.getOriginal();
                     blockSnapshot.getLocation().ifPresent(location ->
                             SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition(), location.getExtent().getName()));
+                    Sponge.getCommandManager().process(player,Harvester.getGlobalConfiguration().getBlockBreakCommand());
                     return;
                 }
             }
