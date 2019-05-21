@@ -16,6 +16,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
@@ -28,7 +29,10 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Plugin(id = "harvester", name = "Harvester", version = "1.0.0")
+@Plugin(id = "harvester", name = "Harvester", version = "1.1.0",
+		description = "A plugin to manage the resources spawn and loots from mining.",
+		authors = {"Raiponz", "Zessirb"},
+		dependencies = {@Dependency(id = "itemizer", optional = true)})
 public class Harvester {
 
 	@Inject
