@@ -17,23 +17,24 @@ public class ReloadCommand implements CommandExecutor{
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         try {
-            Harvester.getHarvester().loadHarvestable();
-            src.sendMessage(Text.builder()
-                    .append(Text.builder("Harvestables configuration successfully reloaded.").color(TextColors.GREEN).build())
-                    .build());
-        } catch (IOException e) {
-            writeError(src,e);
-        } catch (ObjectMappingException e) {
+            int harvestable = Harvester.getHarvester().loadHarvestable();
+            src.sendMessage(writeSucces("Harvestable",harvestable));
+        } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
         }
         try {
-            Harvester.getHarvester().loadDrops();
-            src.sendMessage(Text.builder()
-                    .append(Text.builder("Drops configuration successfully reloaded.").color(TextColors.GREEN).build())
-                    .build());
-        } catch (IOException e) {
+            int drops = Harvester.getHarvester().loadDrops();
+            src.sendMessage(writeSucces("drops.conf", drops));
+        } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
-        } catch (ObjectMappingException e) {
+        }
+        /** load Global configuration */
+        try {
+            src.sendMessage(Text.builder("Load global configuration").color(TextColors.GREEN).build());
+            Harvester.getHarvester().loadGlobal();
+            Harvester.getGlobalConfiguration().getWorldNames().forEach(
+                    s -> src.sendMessage(Text.builder(s).color(TextColors.GOLD).build()));
+        } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
         }
         return CommandResult.success();
@@ -43,5 +44,11 @@ public class ReloadCommand implements CommandExecutor{
                 .append(Text.builder("Harvester configuration reload failed. ").color(TextColors.DARK_RED).build())
                 .append(Text.builder(e.getMessage()).color(TextColors.RED).build())
                 .build());
+    }
+    private Text writeSucces(String configName,int lineReloaded){
+       return Text.builder()
+                .append(Text.builder(configName+" configuration successfully reloaded.").color(TextColors.GREEN).build())
+                .append(Text.builder(lineReloaded + "line reloaded" ).color(TextColors.GOLD).build())
+               .build();
     }
 }

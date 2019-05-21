@@ -1,6 +1,7 @@
 package com.onaple.harvester.data.handlers;
 
 import com.google.common.reflect.TypeToken;
+import com.onaple.harvester.GlobalConfiguration;
 import com.onaple.harvester.data.beans.HarvestableBean;
 import com.onaple.harvester.data.serializers.HarvestDropSerializer;
 import com.onaple.harvester.data.serializers.HarvestableSerializer;
@@ -48,6 +49,11 @@ public class ConfigurationHandler {
             Harvester.getLogger().error("Error while reading configuration 'harvestables' : " + e.getMessage());
         }*/
     }
+    public static GlobalConfiguration readGlobalConfiguration(CommentedConfigurationNode configurationNode) throws ObjectMappingException {
+        List<String> worldnames = configurationNode.getNode("worlds").getList(TypeToken.of(String.class));
+        String blockBreakCommand = configurationNode.getNode("blockBreakCommand").getString();
+        return new GlobalConfiguration(worldnames,blockBreakCommand);
+    }
 
     /**
      * Read block drops configuration and interpret it
@@ -80,11 +86,7 @@ public class ConfigurationHandler {
     public static CommentedConfigurationNode loadConfiguration(String configName) throws IOException {
         ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
         CommentedConfigurationNode configNode = null;
-      //  try {
             configNode = configLoader.load();
-      /*  } catch (IOException e) {
-            Harvester.getLogger().error("Error while loading configuration '" + configName + "' : " + e.getMessage());
-        }*/
         return configNode;
     }
 }

@@ -17,13 +17,13 @@ import java.sql.Timestamp;
 import java.util.*;
 
 public class SpawnUtil {
-
+        private static Random random = new Random();
     /**
      * Register a mined block in database so it can be respawn later
      * @param harvestable Block to respawn later
      */
     public static void registerRespawningBlock(HarvestableBean harvestable, Vector3i position, String world) {
-        Random random = new Random();
+
         int respawnMin = harvestable.getRespawnMin()*60;
         int respawnMax = harvestable.getRespawnMax()*60;
         int respawnDelay = random.nextInt((respawnMax - respawnMin)+1) + respawnMin;

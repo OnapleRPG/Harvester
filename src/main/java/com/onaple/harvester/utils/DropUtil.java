@@ -24,23 +24,6 @@ import java.util.Optional;
 public class DropUtil {
 
     /**
-     * Spawn configured drops for a given block at a given location
-     *
-     * @param blockState Block that has been destroyed
-     * @param location   Location of the block
-     */
- /*   public static void spawnConfiguredDrop(BlockState blockState, Location<World> location) {
-        Optional<HarvestDropBean> optionalHarvestDrop = identifyHarvestDrop(blockState);
-        if (optionalHarvestDrop.isPresent()) {
-            HarvestDropBean harvestDrop = optionalHarvestDrop.get();
-            ItemStack itemDrop = getConfiguredDrop(harvestDrop);
-            if (itemDrop != null) {
-                spawnItemStack(location.getExtent(), getItemStackEntity(location, itemDrop));
-            }
-        }
-    }*/
-
-    /**
      * Get ItemStack from harvester drop configuration
      *
      * @param harvestDropBean
@@ -86,21 +69,11 @@ public class DropUtil {
      * @param blockState Block to identify drop from
      * @return Optional of harvest drop
      */
-    public static Optional<HarvestDropBean> identifyHarvestDrop(BlockState blockState,int level) {
+    public static Optional<HarvestDropBean> identifyHarvestDrop(BlockState blockState) {
         String blockTypeName = blockState.getType().getName().trim();
         List<HarvestDropBean> harvestDrops = ConfigurationHandler.getHarvestDropList();
         return harvestDrops.stream().filter(harvestDropBean -> harvestDropBean.getBlockType().equals(blockTypeName) &&
-                blockHasTraits(harvestDropBean.getBlockStates(),blockState) &&
-                harvestDropBean.getToolLevel() == level).findFirst();
-//        for (HarvestDropBean harvestDrop : harvestDrops) {
-//            if (harvestDrop.getBlockType().trim().equals(blockTypeName)) {
-//                boolean statesMatch = blockHasTraits(harvestDrop.getBlockStates(), blockState);
-//                if (statesMatch) {
-//                    return Optional.of(harvestDrop);
-//                }
-//            }
-//        }
-        //return Optional.empty();
+                blockHasTraits(harvestDropBean.getBlockStates(), blockState)).findFirst();
     }
 
     /**
