@@ -50,8 +50,6 @@ public class HarvestListener {
                         Sponge.getCommandManager().process(Sponge.getServer().getConsole(),Harvester.getGlobalConfiguration().getBlockBreakCommand());
                     }
                     return;
-                } else {
-                    player.sendMessage(Text.of(TextColors.RED,"you don't have the rigth to break this block"));
                 }
             }
             event.setCancelled(true);
@@ -71,10 +69,8 @@ public class HarvestListener {
 
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event){
-        Harvester.getLogger().info(event.getClass().getName());
         Optional<Player> optionalPlayerCause = event.getCause().first(Player.class);
         Object source = event.getSource();
-        Harvester.getLogger().info(source.toString());
         if(optionalPlayerCause.isPresent()) {
             Player player = optionalPlayerCause.get();
             if (source instanceof BlockSnapshot) {
@@ -105,7 +101,6 @@ public class HarvestListener {
      */
    private Optional<HarvestableBean> identifyHarvestable(BlockState blockState) {
        String blockTypeName = blockState.getType().getName().trim();
-       Harvester.getLogger().info(" block broken is {}",blockTypeName);
        List<HarvestableBean> harvestables = ConfigurationHandler.getHarvestableList();
        for (HarvestableBean harvestable: harvestables) {
            if (harvestable.getType().trim().equals(blockTypeName)) {
