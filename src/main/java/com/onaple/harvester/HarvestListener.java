@@ -17,6 +17,8 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.*;
 
@@ -67,7 +69,6 @@ public class HarvestListener {
 
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event){
-        Harvester.getLogger().info(event.getClass().getName());
         Optional<Player> optionalPlayerCause = event.getCause().first(Player.class);
         Object source = event.getSource();
         if(optionalPlayerCause.isPresent()) {
