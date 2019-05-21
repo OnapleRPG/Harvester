@@ -17,6 +17,8 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.*;
 
@@ -48,6 +50,8 @@ public class HarvestListener {
                         Sponge.getCommandManager().process(Sponge.getServer().getConsole(),Harvester.getGlobalConfiguration().getBlockBreakCommand());
                     }
                     return;
+                } else {
+                    player.sendMessage(Text.of(TextColors.RED,"you don't have the rigth to break this block"));
                 }
             }
             event.setCancelled(true);
@@ -101,6 +105,7 @@ public class HarvestListener {
      */
    private Optional<HarvestableBean> identifyHarvestable(BlockState blockState) {
        String blockTypeName = blockState.getType().getName().trim();
+       Harvester.getLogger().info(" block broken is {}",blockTypeName);
        List<HarvestableBean> harvestables = ConfigurationHandler.getHarvestableList();
        for (HarvestableBean harvestable: harvestables) {
            if (harvestable.getType().trim().equals(blockTypeName)) {
