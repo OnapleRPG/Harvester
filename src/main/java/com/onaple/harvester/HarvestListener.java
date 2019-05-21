@@ -8,10 +8,8 @@ import com.onaple.harvester.utils.SpawnUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
-import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
@@ -61,11 +59,11 @@ public class HarvestListener {
      * @param event Event happening when stuff grows
      */
     @Listener
-    public void onBlockGrowEvent(ChangeBlockEvent.Modify.Grow event){
-        event.setCancelled(true);
+    public void onBlockGrowEvent(ChangeBlockEvent.Modify.Grow event) {
+        if (!Harvester.getGlobalConfiguration().getBlockGrowth()) {
+            event.setCancelled(true);
+        }
     }
-
-
 
     @Listener
     public void onDropItemEvent(DropItemEvent.Destruct event){
@@ -75,31 +73,24 @@ public class HarvestListener {
         Harvester.getLogger().info(source.toString());
         if(optionalPlayerCause.isPresent()) {
             Player player = optionalPlayerCause.get();
-
             if (source instanceof BlockSnapshot) {
                 BlockSnapshot blockSnapshot = (BlockSnapshot) source;
-
                 Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState());
                 if (optionalHarvestable.isPresent()) {
                     event.getEntities().clear();
                     HarvestDropBean harvestable = optionalHarvestable.get();
 
-
                     Optional<ItemStack> dropOptional = DropUtil.getConfiguredDrop(harvestable);
                     if(dropOptional.isPresent()){
                         event.getEntities().add(DropUtil.getItemStackEntity(player.getLocation(), dropOptional.get()));
                     } else {
-                        Harvester.getLogger().warn("item not found");
+                        Harvester.getLogger().warn("Item not found");
                     }
-
                 }
-
             } else {
                 List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
                 event.filterEntities(entity -> !defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
             }
-        } else {
-            Harvester.getLogger().info("no player present");
         }
     }
 

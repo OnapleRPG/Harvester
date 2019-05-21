@@ -23,7 +23,6 @@ public class SpawnUtil {
      * @param harvestable Block to respawn later
      */
     public static void registerRespawningBlock(HarvestableBean harvestable, Vector3i position, String world) {
-
         int respawnMin = harvestable.getRespawnMin()*60;
         int respawnMax = harvestable.getRespawnMax()*60;
         int respawnDelay = random.nextInt((respawnMax - respawnMin)+1) + respawnMin;
@@ -41,7 +40,7 @@ public class SpawnUtil {
         List<RespawningBlockBean> blocksToDelete = new ArrayList<>();
         List<RespawningBlockBean> respawningBlocks = RespawningBlockDao.getRespawningBlocks();
         if (!respawningBlocks.isEmpty()) {
-            Harvester.getLogger().info("Respawning resources : " + respawningBlocks.size() + " resources.");
+            Harvester.getLogger().info("Respawning resources: " + respawningBlocks.size() + " resources.");
         }
         for (RespawningBlockBean block: respawningBlocks) {
             Sponge.getServer().getWorld(block.getWorld()).ifPresent(world -> {

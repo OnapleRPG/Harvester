@@ -54,8 +54,6 @@ public class DropUtil {
                         return Optional.of(poolItem.get());
                     }
                 }
-            } else {
-                Itemizer.getLogger().warn("itemizer not found");
             }
         } catch (NoClassDefFoundError e) {
             Harvester.getLogger().error("Could not contact Itemizer plugin : " + e.getMessage());

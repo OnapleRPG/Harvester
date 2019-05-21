@@ -70,46 +70,45 @@ public class Harvester {
 			Optional itemServiceOptional = Sponge.getServiceManager().provide(IItemService.class);
 			if (itemServiceOptional.isPresent()) {
 				itemService = itemServiceOptional;
+				logger.info("Itemizer dependency found!");
 			} else {
 				logger.warn("Itemizer dependency not found");
 			}
-		} else {
-			logger.warn("Itemizer dependency not found");
 		}
 
 		Sponge.getEventManager().registerListeners(this, new HarvestListener());
 		RespawningBlockDao.createTableIfNotExist();
 
-		/** load block configuration*/
+		/* load block configuration*/
 		try {
 			logger.info("{} of Block in configuration", loadHarvestable());
 		} catch (IOException | ObjectMappingException e) {
-			logger.error("error while reading harvestable configuration", e);
+			logger.error("Error while reading harvestable configuration: ", e);
 		}
 
-		/** load drops configuration */
+		/* load drops configuration */
 		try {
 			logger.info("{} of drops in configuration", loadDrops());
 
 		} catch (IOException | ObjectMappingException e) {
-			logger.error("error while reading drop configuration", e);
+			logger.error("Error while reading drop configuration: ", e);
 		}
-		/** load Global configuration */
+		/* load Global configuration */
 		try {
-			logger.info("Load global configuration");
 			loadGlobal();
-			globalConfiguration.getWorldNames().forEach(s -> logger.info(s));
-			logger.info("command run when block break : {}",globalConfiguration.getBlockBreakCommand());
+			logger.info("Loaded global configuration");
+			logger.info("Enabled Harvester into {} worlds.", globalConfiguration.getWorldNames().size());
+			logger.info("Command run when blocks break : {}", globalConfiguration.getBlockBreakCommand());
 		} catch (IOException | ObjectMappingException e) {
-			logger.error("error while reading the global configuration", e);
+			logger.error("Error while reading the global configuration", e);
 		}
 
-		Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
+		Task.builder().execute(SpawnUtil::checkBlockRespawn)
                 .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);
 
 		CommandSpec reload = CommandSpec.builder()
-				.description(Text.of("Reaload Harvester configuration from files."))
+				.description(Text.of("Reload Harvester configuration from files."))
 				.permission("harvester.command.reload")
 				.executor(new ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reload, "reload-harvester");
@@ -160,7 +159,7 @@ public class Harvester {
 						getLogger().error("Error while setting default configuration : " + e.getMessage());
 					}
 				} else {
-					logger.warn("Default config not found !");
+					logger.warn("Default config not found!");
 				}
 
 			}
