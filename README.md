@@ -85,5 +85,5 @@ cobblestone block, the item number 2 of Itemizer, and an item from the first Ite
 writen only one or two of the three item fetchers._
 
 ### Reload command
-There is a command that reloads the configuration files without needing to restart the server : **/reload-harvester**.  
+There is a command that reloads the configuration files without needing to restart the server : **/harvester reload**.  
 Permission : *harvester.command.reload*
