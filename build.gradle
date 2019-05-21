@@ -87,7 +87,7 @@ dependencies {
     implementation 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
     implementation 'org.xerial:sqlite-jdbc:3.7.2'
     testCompile "junit:junit:4.11"
-    implementation 'com.github.OnapleRPG:Itemizer:1.2+'
+    implementation 'com.github.onaplerpg:itemizer:f50980e8c9'
     testCompile 'org.spongepowered:mctester:0.10.5-SNAPSHOT'
 }
 

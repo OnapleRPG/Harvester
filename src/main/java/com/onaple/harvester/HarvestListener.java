@@ -42,23 +42,17 @@ public class HarvestListener {
                 Optional<HarvestableBean> optionalHarvestable = identifyHarvestable(transaction.getOriginal().getState());
                 if (optionalHarvestable.isPresent()) {
                     HarvestableBean harvestable = optionalHarvestable.get();
-                   /* Optional<ItemStack> optitemStack =player.getItemInHand(HandTypes.MAIN_HAND);
-                    /*if(optitemStack.isPresent()){
-                       String type = getToolType(optitemStack.get());
-                      // player.sendMessage(Text.of("player tool type = "+ type + "| block tool type" + harvestable.getToolType()));
-                       if (!type.equals(harvestable.getToolType())) {
-                         event.setCancelled(true);
-                       }
-                    }*/
                     BlockSnapshot blockSnapshot = transaction.getOriginal();
                     blockSnapshot.getLocation().ifPresent(location ->
                             SpawnUtil.registerRespawningBlock(harvestable, blockSnapshot.getPosition(), location.getExtent().getName()));
-                    Sponge.getCommandManager().process(player,Harvester.getGlobalConfiguration().getBlockBreakCommand());
+                    String blockBreakCommand = Harvester.getGlobalConfiguration().getBlockBreakCommand();
+                    if(!(blockBreakCommand == null || blockBreakCommand.isEmpty())){
+                        Sponge.getCommandManager().process(Sponge.getServer().getConsole(),Harvester.getGlobalConfiguration().getBlockBreakCommand());
+                    }
                     return;
                 }
             }
             event.setCancelled(true);
-
     }
 
 
@@ -85,12 +79,7 @@ public class HarvestListener {
             if (source instanceof BlockSnapshot) {
                 BlockSnapshot blockSnapshot = (BlockSnapshot) source;
 
-                 Optional<ItemStack> toolOptional =  player.getItemInHand(HandTypes.MAIN_HAND);
-                int toolLevel = 0;
-            if (toolOptional.isPresent()){
-                toolLevel = getToolLevel(toolOptional.get());
-            }
-                Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState(), toolLevel);
+                Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState());
                 if (optionalHarvestable.isPresent()) {
                     event.getEntities().clear();
                     HarvestDropBean harvestable = optionalHarvestable.get();
@@ -132,41 +121,4 @@ public class HarvestListener {
        }
        return Optional.empty();
    }
-
-    /**
-     * Get yhe item data at the given path
-     * @param itemStack the item to get the data
-     * @param path the path of the data
-     * @return an optional object with the data
-     */
-   private Optional<Object> getToolData(ItemStack itemStack,String path) {
-       return itemStack.toContainer().get(DataQuery.of("UnsafeData",path));
-   }
-
-    /**
-     * Get the tool type of the item (set by itemizer)
-     * @param toolItem the item to get the data
-     * @return the type of the tool, return "hand" if no value present
-     */
-   private String getToolType(ItemStack toolItem) {
-       Optional<Object> data = getToolData(toolItem,"ToolType");
-       if(data.isPresent()){
-           return data.get().toString();
-       } else {
-           return "hand";
-       }
-   }
-    /**
-     * Get the tool level of the item (set by itemizer)
-     * @param toolItem the item to get the data
-     * @return the level of the tool, 0 if no value present
-     */
-    private int getToolLevel(ItemStack toolItem) {
-        Optional<Object> data = getToolData(toolItem,"ToolLevel");
-        if(data.isPresent()){
-            return (int) data.get();
-        } else {
-            return 0;
-        }
-    }
 }

@@ -69,39 +69,34 @@ public class Harvester {
 	@Listener
 	public void onServerStart(GameInitializationEvent event) {
 
+		harvester = this;
 		if(Sponge.getPluginManager().getPlugin("itemizer").isPresent()) {
 			Optional itemServiceOptional = Sponge.getServiceManager().provide(IItemService.class);
 			if (itemServiceOptional.isPresent()) {
 				itemService = itemServiceOptional;
 			} else {
-				itemService = Optional.empty();
 				logger.warn("Itemizer dependency not found");
 			}
 		} else {
-			itemService = Optional.empty();
 			logger.warn("Itemizer dependency not found");
 		}
-		harvester = this;
+
 		Sponge.getEventManager().registerListeners(this, new HarvestListener());
 		RespawningBlockDao.createTableIfNotExist();
 
 		/** load block configuration*/
 		try {
-			logger.info("Number of Block in configuration : " + loadHarvestable());
-		} catch (IOException e) {
-			logger.error("IOException : ".concat(e.getMessage()));
-		} catch (ObjectMappingException e) {
-			logger.error("ObjectMappingException : ".concat(e.getMessage()));
+			logger.info("{} of Block in configuration", loadHarvestable());
+		} catch (IOException | ObjectMappingException e) {
+			logger.error("error while reading harvestable configuration", e);
 		}
 
 		/** load drops configuration */
 		try {
-			logger.info("Number of drops in configuration : " + loadDrops());
+			logger.info("{} of drops in configuration", loadDrops());
 
-		} catch (IOException e) {
-			logger.error("IOException : ".concat(e.getMessage()));
-		} catch (ObjectMappingException e) {
-			logger.error("ObjectMappingException : ".concat(e.getMessage()));
+		} catch (IOException | ObjectMappingException e) {
+			logger.error("error while reading drop configuration", e);
 		}
 		/** load Global configuration */
 		try {
@@ -110,9 +105,8 @@ public class Harvester {
 			globalConfiguration.getWorldNames().forEach(s -> logger.info(s));
 			logger.info("command run when block break : {}",globalConfiguration.getBlockBreakCommand());
 		} catch (IOException | ObjectMappingException e) {
-			logger.error(e.getClass().getName() + " : ".concat(e.getMessage()));
+			logger.error("error while reading the global configuration", e);
 		}
-
 
 		Task.builder().execute(() -> SpawnUtil.checkBlockRespawn())
                 .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
@@ -123,8 +117,6 @@ public class Harvester {
 				.permission("harvester.command.reload")
 				.executor(new ReloadCommand()).build();
 		Sponge.getCommandManager().register(this, reload, "reload-harvester");
-
-
 
         logger.info("HARVESTER initialized.");
 	}

@@ -86,11 +86,7 @@ public class ConfigurationHandler {
     public static CommentedConfigurationNode loadConfiguration(String configName) throws IOException {
         ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(Paths.get(configName)).build();
         CommentedConfigurationNode configNode = null;
-      //  try {
             configNode = configLoader.load();
-      /*  } catch (IOException e) {
-            Harvester.getLogger().error("Error while loading configuration '" + configName + "' : " + e.getMessage());
-        }*/
         return configNode;
     }
 }
