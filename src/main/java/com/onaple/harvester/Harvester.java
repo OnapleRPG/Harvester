@@ -107,17 +107,24 @@ public class Harvester {
                 .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
                 .name("Task respawning mined resources.").submit(this);
 
-		CommandSpec reload = CommandSpec.builder()
+		CommandSpec reloadCommand = CommandSpec.builder()
 				.description(Text.of("Reload Harvester configuration from files."))
 				.permission("harvester.command.reload")
 				.executor(new ReloadCommand()).build();
-		Sponge.getCommandManager().register(this, reload, "reload-harvester");
+
+		CommandSpec harvesterCommand = CommandSpec.builder()
+				.description(Text.of("Harvester utility commands"))
+				.permission("harvester.command")
+				.child(reloadCommand, "reload")
+				.build();
+
+		Sponge.getCommandManager().register(this, harvesterCommand, "harvester");
 
         logger.info("HARVESTER initialized.");
 	}
 
 	/**
-	 * Load Harvester configuration. If the config file does'nt exist, it load the default file
+	 * Load Harvester configuration. If the config file doesn't exist, it loads the default file
 	 * @return the number of harvestable block imported
 	 * @throws IOException error when copying default config in config/harvester/ folder
 	 * @throws ObjectMappingException error when the configuration file have an syntax error

@@ -52,7 +52,6 @@ versioning {
 version= versioning.name+'-'+versioning.build
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'org.spongepowered.mctester'
 
 minecraft {
     forgeVersion = '1.12.2-14.23.4.2704'
@@ -87,7 +86,6 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.7.2'
     testCompile "junit:junit:4.11"
     implementation 'com.github.onaplerpg:itemizer:f50980e8c9'
-    testCompile 'org.spongepowered:mctester:0.10.5-SNAPSHOT'
 }
 
 sonarqube {
