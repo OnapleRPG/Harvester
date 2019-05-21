@@ -34,7 +34,6 @@ public class DropUtil {
         if (harvestDropBean.getName() != null && !harvestDropBean.getName().isEmpty()) {
             Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDropBean.getName());
             if (optionalType.isPresent()) {
-                Harvester.getLogger().info(harvestDropBean.getName());
                 return Optional.of(ItemStack.builder().itemType(optionalType.get()).build());
             }
         }

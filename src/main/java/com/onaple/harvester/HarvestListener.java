@@ -70,7 +70,6 @@ public class HarvestListener {
         Harvester.getLogger().info(event.getClass().getName());
         Optional<Player> optionalPlayerCause = event.getCause().first(Player.class);
         Object source = event.getSource();
-        Harvester.getLogger().info(source.toString());
         if(optionalPlayerCause.isPresent()) {
             Player player = optionalPlayerCause.get();
             if (source instanceof BlockSnapshot) {
