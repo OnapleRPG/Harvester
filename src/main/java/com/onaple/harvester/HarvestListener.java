@@ -34,7 +34,7 @@ public class HarvestListener {
     public void onBlockBreak(ChangeBlockEvent.Break event , @First Player player) {
 
         if((!Harvester.getGlobalConfiguration().getWorldNames().contains(player.getWorld().getName()))
-                ||player.gameMode() == GameModes.CREATIVE
+                || player.gameMode().get().equals(GameModes.CREATIVE)
                 || player.hasPermission("harvester.block.breaking")){
             return;
         }

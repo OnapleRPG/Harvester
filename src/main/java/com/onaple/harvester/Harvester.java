@@ -152,7 +152,7 @@ public class Harvester {
 			try {
 				PluginContainer pluginInstance = getInstance();
 				Optional<Asset> defaultConfigFile = pluginInstance.getAsset(path);
-				getLogger().info("No config file set for " + path + " default config will be loaded");
+				getLogger().info("No config file set for " + path + ". Default config will be loaded.");
 				if (defaultConfigFile.isPresent()) {
 					try {
 						defaultConfigFile.get().copyToDirectory(Paths.get(configDir + "/harvester/"));
@@ -160,7 +160,7 @@ public class Harvester {
 						getLogger().error("Error while setting default configuration : " + e.getMessage());
 					}
 				} else {
-					logger.warn("default config not found");
+					logger.warn("Default config not found !");
 				}
 
 			}

@@ -18,13 +18,13 @@ public class ReloadCommand implements CommandExecutor{
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         try {
             int harvestable = Harvester.getHarvester().loadHarvestable();
-            src.sendMessage(writeSucces("Harvestable",harvestable));
+            src.sendMessage(writeSuccess("Harvestable",harvestable));
         } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
         }
         try {
             int drops = Harvester.getHarvester().loadDrops();
-            src.sendMessage(writeSucces("drops.conf", drops));
+            src.sendMessage(writeSuccess("drops.conf", drops));
         } catch (IOException | ObjectMappingException e) {
             writeError(src,e);
         }
@@ -45,10 +45,11 @@ public class ReloadCommand implements CommandExecutor{
                 .append(Text.builder(e.getMessage()).color(TextColors.RED).build())
                 .build());
     }
-    private Text writeSucces(String configName,int lineReloaded){
+    private Text writeSuccess(String configName, int lineReloaded){
        return Text.builder()
                 .append(Text.builder(configName+" configuration successfully reloaded.").color(TextColors.GREEN).build())
-                .append(Text.builder(lineReloaded + "line reloaded" ).color(TextColors.GOLD).build())
+               .append(Text.NEW_LINE)
+                .append(Text.builder(lineReloaded + " line reloaded" ).color(TextColors.GOLD).build())
                .build();
     }
 }
