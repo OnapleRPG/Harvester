@@ -8,16 +8,22 @@ you can active harvester on sevral player with a permission. People who have : `
 
 ## Configuration file
 
+Different configuration files exist to declare how Harvester should change block breaks and drop events.  
+
 ### Global configuration
 
-You can set worlds where you want that Harvester is enabled in the global.conf. Be careful world name are case sensitive. 
+Global configuration is used for a few settings. It should be set within a __*global.conf*__ file if you wish to override the default behavior, existing within the _harvester_ folder within the _config_.   
+
+You can set worlds where you want that Harvester is enabled in the global.conf. Be careful world name are case sensitive. (by default, every worlds will be taken into account)  
+You can also prevent block growth by setting the blockGrowth boolean to false. Useful if you don't want crops to grow (like if you use different textures for crops stages for non related blocks). If equal to true or non specified, crops will grow normally.  
 ```
 Worlds = ["worldName1","WorldName2"]
+blockGrowth = true
 ``` 
 
 ### Harvest regeneration
 
-A file named __*harvestables.conf*__ needs to be created into the _config_ folder of the server.
+A file named __*harvestables.conf*__ needs to be created into the _harvester_ folder of the server config folder.
 This file is going to describe which blocks can be broke and when they will respawn.  
 
 The file uses HOCON format, and must begin with the array __harvestables__.  
@@ -49,7 +55,7 @@ Only the andesite variant of stone can be broken, and it will respawn between 5 
 
 ### Harvest drops
 
-A file named __*drops.conf*__ must exist into the _config_folder of the server.
+A file named __*drops.conf*__ must exist into the _harvester_ folder within the _config_folder of the server.
 It is used to define the items that will come out of the mined blocks.
 
 The file also uses HOCON and contains two arrays :  

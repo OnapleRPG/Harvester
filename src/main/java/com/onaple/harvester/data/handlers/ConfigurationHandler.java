@@ -52,7 +52,7 @@ public class ConfigurationHandler {
     public static GlobalConfiguration readGlobalConfiguration(CommentedConfigurationNode configurationNode) throws ObjectMappingException {
         List<String> worldnames = configurationNode.getNode("worlds").getList(TypeToken.of(String.class));
         String blockBreakCommand = configurationNode.getNode("blockBreakCommand").getString();
-        boolean blockGrowth = configurationNode.getNode("blockGrowth").getBoolean();
+        boolean blockGrowth = configurationNode.getNode("blockGrowth").getBoolean(true);
         return new GlobalConfiguration(worldnames, blockBreakCommand, blockGrowth);
     }
 
