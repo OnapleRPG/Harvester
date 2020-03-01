@@ -73,11 +73,12 @@ public class HarvestListener {
         Object source = event.getSource();
         if(optionalPlayerCause.isPresent()) {
             Player player = optionalPlayerCause.get();
+            List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
+            event.filterEntities(entity -> !defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
             if (source instanceof BlockSnapshot) {
                 BlockSnapshot blockSnapshot = (BlockSnapshot) source;
                 Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState());
                 if (optionalHarvestable.isPresent()) {
-                    event.getEntities().clear();
                     HarvestDropBean harvestable = optionalHarvestable.get();
 
                     Optional<ItemStack> dropOptional = DropUtil.getConfiguredDrop(harvestable);
@@ -87,9 +88,6 @@ public class HarvestListener {
                         Harvester.getLogger().warn("Item not found");
                     }
                 }
-            } else {
-                List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
-                event.filterEntities(entity -> !defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
             }
         }
     }
