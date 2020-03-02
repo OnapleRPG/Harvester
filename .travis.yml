@@ -1,0 +1,17 @@
+language: java
+jdk:
+  - oraclejdk8
+
+before_install:
+  - gradle wrapper
+  - chmod +x scripts/run-xvfb
+  - scripts/run-xvfb
+install: true
+
+addons:
+  sonarcloud:
+    organization: ylinor-github
+  ssh_known_hosts: onaple.fr
+
+script:
+  - ./gradlew sonarqube --stacktrace -x test
