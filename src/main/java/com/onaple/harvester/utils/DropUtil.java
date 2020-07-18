@@ -17,6 +17,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,12 +30,12 @@ public class DropUtil {
      * @param harvestDropBean
      * @return the matching itemStack by id,pool or name
      */
-    public static Optional<ItemStack> getConfiguredDrop(HarvestDropBean harvestDropBean) {
-
+    public static List<Optional<ItemStack>> getConfiguredDrops(HarvestDropBean harvestDropBean) {
+        List<Optional<ItemStack>> drops = new ArrayList<>();
         if (harvestDropBean.getName() != null && !harvestDropBean.getName().isEmpty()) {
             Optional<ItemType> optionalType = Sponge.getRegistry().getType(ItemType.class, harvestDropBean.getName());
             if (optionalType.isPresent()) {
-                return Optional.of(ItemStack.builder().itemType(optionalType.get()).build());
+                drops.add(Optional.of(ItemStack.builder().itemType(optionalType.get()).build()));
             }
         }
         try {
@@ -44,20 +45,20 @@ public class DropUtil {
                 if (harvestDropBean.getItemRef() != null) {
                     Optional<ItemStack> refItem = iItemService.retrieve(harvestDropBean.getItemRef());
                     if (refItem.isPresent()) {
-                        return Optional.of(refItem.get());
+                        drops.add(Optional.of(refItem.get()));
                     }
                 }
                 if (harvestDropBean.getPoolRef() != null) {
                     Optional<ItemStack> poolItem = iItemService.fetch(harvestDropBean.getPoolRef());
                     if (poolItem.isPresent()) {
-                        return Optional.of(poolItem.get());
+                        drops.add(Optional.of(poolItem.get()));
                     }
                 }
             }
         } catch (NoClassDefFoundError e) {
             Harvester.getLogger().error("Could not contact Itemizer plugin : " + e.getMessage());
         }
-        return Optional.empty();
+        return drops;
     }
 
     /**

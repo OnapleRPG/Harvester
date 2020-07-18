@@ -37,26 +37,18 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.plugin'
-
 apply plugin: 'eu.davidea.grabver'
 
 
 versioning {
     // required (number)
     major = 1
-    minor = 1
-    patch = 1
+    minor = 2
+    patch = 0
 
 }
 
-version= versioning.name+'-'+versioning.build
-
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-minecraft {
-    forgeVersion = '1.12.2-14.23.4.2704'
-    mappings = "snapshot_20180808"
-}
+// apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -66,7 +58,7 @@ publishing {
         maven(MavenPublication) {
             groupId 'com.ylinor'
             artifactId 'harvester'
-            version '0.1'
+            version '1.2'
 
             from components.java
         }
@@ -94,4 +86,4 @@ sonarqube {
         property "sonar.organization", "ylinor-github"
         property "sonar.host.url", "https://sonarcloud.io"
     }
- }
+}

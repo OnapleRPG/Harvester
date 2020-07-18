@@ -12,3 +12,8 @@ build
 production
 logs
 .mixin.out
+bin
+.classpath
+.project
+.settings
+.vscode
