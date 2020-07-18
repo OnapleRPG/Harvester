@@ -1,7 +1,6 @@
 package com.onaple.harvester.data.beans;
 
 import java.util.Map;
-import java.util.Optional;
 
 public class HarvestDropBean {
     /**

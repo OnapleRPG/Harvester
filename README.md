@@ -72,7 +72,7 @@ It contains a list of the resources that will drop as is on a vanilla server.
 ```
 default = [
    	"minecraft:dirt",
-   	"minecraft:wood"
+   	"minecraft:stone"
 ]
 harvest_items = [
    {
@@ -86,9 +86,8 @@ harvest_items = [
    }
 ]
 ```
-_Following the above example, dirt and wood are going to drop their respective items, whereas diorite stone will drop a
-cobblestone block, the item number 2 of Itemizer, and an item from the first Itemizer pool. Note that we could have 
-writen only one or two of the three item fetchers._
+_Following the above example, dirt and stone are going to drop their default drop, but diorite stone will drop a
+cobblestone block, the item number 2 of Itemizer, and an item from the first Itemizer pool, as well as its default drop (since diorite is a type of stone)._
 
 ### Reload command
 There is a command that reloads the configuration files without needing to restart the server : **/harvester reload**.  

@@ -73,43 +73,44 @@ public class HarvestListener {
         Object source = event.getSource();
         if(optionalPlayerCause.isPresent()) {
             Player player = optionalPlayerCause.get();
+            List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
+            if (!event.getEntities().stream().anyMatch(entity -> defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().getType().getName().toString()))) {
+                event.getEntities().clear();
+            }
             if (source instanceof BlockSnapshot) {
                 BlockSnapshot blockSnapshot = (BlockSnapshot) source;
                 Optional<HarvestDropBean> optionalHarvestable = DropUtil.identifyHarvestDrop(blockSnapshot.getState());
                 if (optionalHarvestable.isPresent()) {
-                    event.getEntities().clear();
                     HarvestDropBean harvestable = optionalHarvestable.get();
-
-                    Optional<ItemStack> dropOptional = DropUtil.getConfiguredDrop(harvestable);
-                    if(dropOptional.isPresent()){
-                        event.getEntities().add(DropUtil.getItemStackEntity(player.getLocation(), dropOptional.get()));
-                    } else {
-                        Harvester.getLogger().warn("Item not found");
-                    }
+                    List<Optional<ItemStack>> drops = DropUtil.getConfiguredDrops(harvestable);
+                    drops.forEach(dropOptional -> {
+                        if(dropOptional.isPresent()){
+                            event.getEntities().add(DropUtil.getItemStackEntity(player.getLocation(), dropOptional.get()));
+                        } else {
+                            Harvester.getLogger().warn("Item not found");
+                        }
+                    });
                 }
-            } else {
-                List<String> defaultDrops = ConfigurationHandler.getHarvestDefaultDropList();
-                event.filterEntities(entity -> !defaultDrops.contains(entity.get(Keys.REPRESENTED_ITEM).get().toString()));
             }
         }
     }
 
-   /**
+    /**
      * Return harvestable if present in configuration
      * @param blockState Block to identify
      * @return Optional of harvestable
-     */
-   private Optional<HarvestableBean> identifyHarvestable(BlockState blockState) {
-       String blockTypeName = blockState.getType().getName().trim();
-       List<HarvestableBean> harvestables = ConfigurationHandler.getHarvestableList();
-       for (HarvestableBean harvestable: harvestables) {
-           if (harvestable.getType().trim().equals(blockTypeName)) {
-               boolean statesMatch = DropUtil.blockHasTraits(harvestable.getStates(), blockState);
-               if (statesMatch) {
-                   return Optional.of(harvestable);
-               }
-           }
-       }
-       return Optional.empty();
-   }
+    */
+    private Optional<HarvestableBean> identifyHarvestable(BlockState blockState) {
+        String blockTypeName = blockState.getType().getName().trim();
+        List<HarvestableBean> harvestables = ConfigurationHandler.getHarvestableList();
+        for (HarvestableBean harvestable: harvestables) {
+            if (harvestable.getType().trim().equals(blockTypeName)) {
+                boolean statesMatch = DropUtil.blockHasTraits(harvestable.getStates(), blockState);
+                if (statesMatch) {
+                    return Optional.of(harvestable);
+                }
+            }
+        }
+        return Optional.empty();
+    }
 }
